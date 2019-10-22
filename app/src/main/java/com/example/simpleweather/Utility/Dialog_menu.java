@@ -60,7 +60,7 @@ public class Dialog_menu {
                 editor.apply();
                 d.hide();
                 ((MainActivity)context).executeWeatherTask();
-                
+
 
 
             }

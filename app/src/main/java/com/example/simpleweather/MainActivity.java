@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     String PREFERENCES;
     static final int PAGE_COUNT = 10;
     static final String TAG = "myLogs";
+    static JSONArray jArr;
 
     ViewPager pager;
     PagerAdapter pagerAdapter;
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar loader;
     RelativeLayout mainContainer;
     TextView errorText;
+    String jsonString;
+    JSONArray jsonArray;
 
 
 
@@ -63,18 +66,34 @@ public class MainActivity extends AppCompatActivity {
 
         addressButton = findViewById(R.id.address);
         updated_atTxt = findViewById(R.id.updated_at);
-        statusTxt = findViewById(R.id.status);
-        tempTxt = findViewById(R.id.temp);
-        temp_minTxt = findViewById(R.id.temp_min);
-        temp_maxTxt = findViewById(R.id.temp_max);
-        sunriseTxt = findViewById(R.id.sunrise);
-        sunsetTxt = findViewById(R.id.sunset);
-        windTxt = findViewById(R.id.wind);
-        pressureTxt = findViewById(R.id.pressure);
-        humidityTxt = findViewById(R.id.humidity);
+//        statusTxt = findViewById(R.id.status);
+//        tempTxt = findViewById(R.id.temp);
+//        temp_minTxt = findViewById(R.id.temp_min);
+//        temp_maxTxt = findViewById(R.id.temp_max);
+//        sunriseTxt = findViewById(R.id.sunrise);
+//        sunsetTxt = findViewById(R.id.sunset);
+//        windTxt = findViewById(R.id.wind);
+//        pressureTxt = findViewById(R.id.pressure);
+//        humidityTxt = findViewById(R.id.humidity);
         loader = findViewById(R.id.loader);
-        mainContainer=findViewById(R.id.mainContainer);
+//        mainContainer=findViewById(R.id.mainContainer);
         errorText=findViewById(R.id.errorText);
+        executeWeatherTask();
+
+//
+        String jsonString =sharedPreferences.getString("jsonArray",null);
+        try {
+           jsonArray= new JSONArray(jsonString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+        ViewPager viewPager = findViewById(R.id.pager);
+        PagerAdapter adapter = new ViewPagerAdapter(MainActivity.this, jsonArray);
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(0);
 
 
 //        (weather);
@@ -86,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        executeWeatherTask();
+
 
 
 
@@ -113,14 +132,20 @@ public class MainActivity extends AppCompatActivity {
         new WeatherTask().execute();
     }
 
+
+
+
+
     public  class WeatherTask extends AsyncTask<String, Void, String> {
+
+
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
             loader.setVisibility(View.VISIBLE);
-            mainContainer.setVisibility(View.GONE);
+//            mainContainer.setVisibility(View.GONE);
             errorText.setVisibility(View.GONE);
         }
 
@@ -140,9 +165,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                JSONArray jArr = jsonResult.getJSONArray("list"); // Here we have the forecast for every day
+                jArr = jsonResult.getJSONArray("list"); // Here we have the forecast for every day
                 JSONObject jLocation = jsonResult.getJSONObject("city");// Here we have the forecast for every day
                 JSONObject jsonObj = jArr.getJSONObject(0);
+                jsonString = jArr.toString();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("jsonArray",jsonString);
+                editor.apply();
 //
 //                // We traverse all the array and parse the data
 //                for (int i=0; i < jArr.length(); i++) {
@@ -176,11 +205,11 @@ public class MainActivity extends AppCompatActivity {
                 String address = jLocation.getString("name") + ", " + jLocation.getString("country");
 
 
-                /* Populating extracted data into our views */
+//                /* Populating extracted data into our views */
                 addressButton.setText(address);
-//                updated_atTxt.setText(updatedAtText);
-                statusTxt.setText(weatherDescription.toUpperCase());
-                tempTxt.setText(temp);
+                updated_atTxt.setText(updatedAtText);
+//                statusTxt.setText(weatherDescription.toUpperCase());
+//                tempTxt.setText(temp);
 //                temp_minTxt.setText(tempMin);
 //                temp_maxTxt.setText(tempMax);
 //                // sunriseTxt.setText(new SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(new Date(sunrise * 1000)));
@@ -191,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
                 /* Views populated, Hiding the loader, Showing the main design */
                 loader.setVisibility(View.GONE);
-                mainContainer.setVisibility(View.VISIBLE);
+//                mainContainer.setVisibility(View.VISIBLE);
 
 
 
@@ -200,6 +229,10 @@ public class MainActivity extends AppCompatActivity {
                 errorText.setVisibility(View.VISIBLE);
             }
 
+        }
+
+        public JSONArray jsonArray(JSONArray jsonArray){
+            return jsonArray;
         }
 
         private Long extractSunrize(JSONObject jsonObj) {
