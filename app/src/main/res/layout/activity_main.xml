@@ -16,23 +16,32 @@
             android:id="@+id/listView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
         </ScrollView>
-
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
-    <LinearLayout android:id="@+id/addressContainer" android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:orientation="vertical"
-        android:gravity="center">
+    <LinearLayout
+        android:id="@+id/addressContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:gravity="center"
+        android:orientation="vertical">
+
         <Button
+            android:id="@+id/address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:id="@+id/address" android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:textSize="24dp"
-            android:text="DHAKA, BD"/>
-        <TextView android:id="@+id/updated_at" android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:textSize="14dp"
-            android:text="20 April 2012, 20:08 PM"/>
+            android:text="DHAKA, BD"
+            android:textSize="24dp" />
+
+        <TextView
+            android:id="@+id/updated_at"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20 April 2012, 20:08 PM"
+            android:textSize="14dp" />
     </LinearLayout>
 
     <RelativeLayout android:id="@+id/mainContainer" android:layout_width="match_parent"
@@ -166,19 +175,38 @@
             </LinearLayout>
         </LinearLayout>
 
-
-
-
     </RelativeLayout>
 
+
+
+
+
+
+
+
+    <androidx.viewpager.widget.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </androidx.viewpager.widget.ViewPager>
 
     <ProgressBar android:id="@+id/loader" android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:layout_centerInParent="true"
         android:visibility="gone"/>
 
-    <TextView android:id="@+id/errorText" android:layout_width="wrap_content"
+        <TextView android:id="@+id/errorText" android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:layout_centerInParent="true"
         android:visibility="gone" android:text="Something went wrong"/>
+
+
+
+
+
+
+
+
+
 
 
 

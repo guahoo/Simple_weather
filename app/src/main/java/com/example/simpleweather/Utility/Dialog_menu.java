@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.example.simpleweather.MainActivity;
+import com.example.simpleweather.PageFragment;
 import com.example.simpleweather.R;
 
 
@@ -24,9 +25,8 @@ public class Dialog_menu {
     SharedPreferences sharedPreferences;
     Context context;
     ImageButton ok_button;
-    String PREFERENCES;
-    String city;
     EditText getCity;
+
 
     public Dialog_menu(SharedPreferences sharedPreferences, Context context) {
         this.sharedPreferences = sharedPreferences;
@@ -59,8 +59,9 @@ public class Dialog_menu {
                 editor.putString("cityName",getCity.getText().toString());
                 editor.apply();
                 d.hide();
-                Intent intent=new Intent(context,MainActivity.class);
-                context.startActivity(intent);
+                ((MainActivity)context).executeWeatherTask();
+                
+
 
             }
         });
