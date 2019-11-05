@@ -1,48 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="300dp"
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="?attr/actionBarSize"
+        android:background="@drawable/bg_gradient"
         android:orientation="vertical"
-        android:paddingLeft="25dp"
         android:paddingBottom="30dp"
+        android:paddingLeft="25dp"
         android:paddingRight="25dp"
-        android:paddingTop="50dp"
-        android:background="@drawable/bg_gradient">
+        android:paddingTop="50dp">
 
 
-            <EditText
-                android:id="@+id/cityNameEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Бобруйск"
-                android:singleLine="true"
-                android:textSize="30sp"
-                android:background="@android:color/white"/>
+        <EditText
+            android:id="@+id/cityNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:hint="Бобруйск"
+
+            android:inputType="text"
+            android:singleLine="true"
+            android:textSize="30sp" />
 
 
         <ImageButton
             android:id="@+id/ok_Btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="40dp"
+            android:layout_below="@+id/cityNameEditText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
             android:background="@android:color/transparent"
             android:clickable="true"
             android:focusable="true"
             app:srcCompat="@drawable/ic_ok_button"
-
             tools:ignore="VectorDrawableCompat" />
 
+        <ListView
+            android:id="@+id/cityList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cityNameEditText"
+            tools:ignore="NotSibling" />
 
-    </LinearLayout>
 
-</LinearLayout>
+    </RelativeLayout>
+
+
+</RelativeLayout>

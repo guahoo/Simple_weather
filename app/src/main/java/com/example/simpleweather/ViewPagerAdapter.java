@@ -9,9 +9,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.simpleweather.Utility.Convert;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
@@ -19,6 +25,9 @@ import androidx.viewpager.widget.PagerAdapter;
 public class ViewPagerAdapter extends PagerAdapter {
     private Context mContext;
     JSONArray jArr;
+    TextView  updated_atTxt,pressureTxt, humidityTxt,windTxt,statusTxt;
+    TextView   tempTxt;
+;
 
 
     public ViewPagerAdapter(Context context, JSONArray jArr) {
@@ -29,7 +38,6 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-
         return jArr.length();
     }
 
@@ -41,7 +49,7 @@ public class ViewPagerAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        TextView   tempTxt;
+
 
         LayoutInflater inflater = (LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -51,15 +59,43 @@ public class ViewPagerAdapter extends PagerAdapter {
         try {
             JSONObject jsonObject=jArr.getJSONObject(position);
             JSONObject main = jsonObject.getJSONObject("main");
-            String temp = main.getString("temp") + "°C";
+            Long updatedAt = jsonObject.getLong("dt");
+            JSONObject wind = jsonObject.getJSONObject("wind");
+            JSONObject weather = jsonObject.getJSONArray("weather").getJSONObject(0);
+
+
+
+
+
+
+            String temp = Convert.tempString(main.getString("temp"));
+            String updatedAtText = new SimpleDateFormat("dd/MM/yyyy HH:mm ", Locale.ENGLISH)
+                    .format(new Date(updatedAt * 1000));
+            String pressure = main.getString("pressure");
+            String humidity = main.getString("humidity");
+            String windSpeed = wind.getString("speed");
+            String weatherDescription = weather.getString("description");
+
+
+
+
+
             tempTxt = itemView.findViewById(R.id.temp);
+            updated_atTxt = itemView.findViewById(R.id.updated_at);
+            windTxt = itemView.findViewById(R.id.wind);
+            pressureTxt = itemView.findViewById(R.id.pressure);
+            humidityTxt = itemView.findViewById(R.id.humidity);
+            statusTxt = itemView.findViewById(R.id.status);
+
+
+
+
             tempTxt.setText(temp);
-
-
-
-
-
-
+            updated_atTxt.setText(updatedAtText);
+            pressureTxt.setText(pressure);
+            humidityTxt.setText(humidity);
+            statusTxt.setText(weatherDescription.toUpperCase());
+            windTxt.setText(windSpeed);
 
         }
 

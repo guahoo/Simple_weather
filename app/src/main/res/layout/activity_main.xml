@@ -8,72 +8,194 @@
     android:padding="25dp"
     android:background="@drawable/bg_gradient">
 
+
+
+
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/pullToRefresh"
-            android:layout_width="match_parent"
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/pager"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+        </androidx.viewpager.widget.ViewPager>
 
-            </androidx.viewpager.widget.ViewPager>
-
-            <ScrollView
-                android:id="@+id/listView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"></ScrollView>
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </RelativeLayout>
-
-
-    <LinearLayout
-        android:id="@+id/addressContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:text="DHAKA, BD"
-            android:textSize="24dp" />
-
-        <TextView
-            android:id="@+id/updated_at"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="20 April 2012, 20:08 PM"
-            android:textSize="14dp" />
-    </LinearLayout>
 
 
     <ProgressBar android:id="@+id/loader" android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:layout_centerInParent="true"
         android:visibility="gone"/>
 
-        <TextView android:id="@+id/errorText" android:layout_width="wrap_content"
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+
+    <LinearLayout
+        android:id="@+id/sun_rise_set"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/currentTempContainer"
+
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="0dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        tools:ignore="NotSibling">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/sunrise"
+            android:tint="#FFFFFF"
+            android:layout_marginEnd="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sunrise"
+            android:layout_marginEnd="10dp"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/sunrise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="06:40 AM"
+            android:textSize="12sp" />
+
+        <Space
+            android:layout_width="50dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sunset"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/sunset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="06:40 "
+            android:textSize="12sp" />
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/sunset"
+            android:tint="#FFFFFF" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/temp_min_max"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/currentTempContainer"
+        android:layout_marginBottom="1dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/temp_min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Min Temp: 05:05" />
+
+        <Space
+            android:layout_width="70dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/temp_max"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Max Temp: 05:05 " />
+    </LinearLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/pullToRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginBottom="0dp">
+
+        <ScrollView
+            android:id="@+id/listView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/addressContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:text="Бобруйск, BY"
+                    android:textSize="24dp" />
+            </LinearLayout>
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/currentTempContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_alignBottom="@id/pullToRefresh"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/updated_at"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:text="20 April 2019, 20:08 "
+
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Clear Sky"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-thin"
+            android:text="29°C"
+            android:textSize="90dp" />
+    </LinearLayout>
+
+
+</RelativeLayout>
+
+
+    <TextView android:id="@+id/errorText" android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:layout_centerInParent="true"
         android:visibility="gone" android:text="Something went wrong"/>
-
-
-
-
-
-
-
-
-
-
 
 
 
