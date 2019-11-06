@@ -1,15 +1,12 @@
 package com.example.simpleweather;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.androdocs.httprequest.HttpRequest;
@@ -21,20 +18,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 public class MainActivity extends AppCompatActivity {
+
+    List<Phone> phones = new ArrayList<>();
 
     Button addressButton;
     SharedPreferences sharedPreferences;
@@ -52,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
     TextView errorText;
     String jsonString;
     JSONArray jsonArray;
+    String []myDataset=new String[]{
+      "monday","thuesday","wendsday","thursday","friday","saturday","sunday"
+    };
 
 
     @SuppressLint("ResourceType")
@@ -69,7 +70,11 @@ public class MainActivity extends AppCompatActivity {
             editor.apply();
         }
 
+// устанавливаем для списка адаптер
+
         addressButton = findViewById(R.id.address);
+
+//        recyclerView.setHasFixedSize(true);
 
 
         tempTxt = findViewById(R.id.temp);
@@ -82,6 +87,19 @@ public class MainActivity extends AppCompatActivity {
         errorText=findViewById(R.id.errorText);
 
 
+        setInitialData();
+        RecyclerView recyclerView =  findViewById(R.id.recycler_forecast_view);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerView.setLayoutManager(layoutManager);
+
+
+// создаем адаптер
+        DataAdapter adapter = new DataAdapter(this, phones);
+
+        recyclerView.setAdapter(adapter);
+
+
 
         String jsonString =sharedPreferences.getString("jsonArray",null);
         try {
@@ -91,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
         }
         executeWeatherTask();
 
-        setViewPager();
+
+       // setViewPager();
 
 
 
@@ -217,7 +236,8 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                setViewPager();
+                //setViewPager();
+
 
 
 
@@ -244,6 +264,13 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(0);
 
+    }
+    private void setInitialData(){
+
+        phones.add(new Phone ("Huawei P10", "Huawei", R.drawable.info));
+        phones.add(new Phone ("Elite z3", "HP", R.drawable.pressure));
+        phones.add(new Phone ("Galaxy S8", "Samsung", R.drawable.humidity));
+        phones.add(new Phone ("LG G 5", "LG", R.drawable.wind));
     }
 
 
