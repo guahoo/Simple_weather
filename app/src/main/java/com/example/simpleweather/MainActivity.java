@@ -33,11 +33,13 @@ import androidx.viewpager.widget.ViewPager;
 public class MainActivity extends AppCompatActivity {
 
     List<Phone> phones = new ArrayList<>();
+    List<Weather_model> weather_forecast = new ArrayList<>();
 
     Button addressButton;
     SharedPreferences sharedPreferences;
     String PREFERENCES;
     static JSONArray jArr;
+
 
 
 
@@ -70,11 +72,11 @@ public class MainActivity extends AppCompatActivity {
             editor.apply();
         }
 
-// устанавливаем для списка адаптер
+
 
         addressButton = findViewById(R.id.address);
 
-//        recyclerView.setHasFixedSize(true);
+
 
 
         tempTxt = findViewById(R.id.temp);
@@ -87,16 +89,19 @@ public class MainActivity extends AppCompatActivity {
         errorText=findViewById(R.id.errorText);
 
 
-        setInitialData();
+        try {
+            setInitialData();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         RecyclerView recyclerView =  findViewById(R.id.recycler_forecast_view);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
 
 
-// создаем адаптер
-        DataAdapter adapter = new DataAdapter(this, phones);
 
+        Weather_recycler_adapter adapter = new Weather_recycler_adapter(this, weather_forecast);
         recyclerView.setAdapter(adapter);
 
 
@@ -211,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... strings) {
-            //String response = HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/weather?lat=" + LAT + "&lon=" + LON + "&units=metric&appid=" + API);
+
             return HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/forecast?q=" + sharedPreferences.
                     getString("cityName","Moscow") + "&units=metric&cnt=30&appid=" + API);
         }
@@ -265,12 +270,42 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setCurrentItem(0);
 
     }
-    private void setInitialData(){
+    private void setInitialData() throws JSONException {
+        String jsonString =sharedPreferences.getString("jsonArray",null);
 
-        phones.add(new Phone ("Huawei P10", "Huawei", R.drawable.info));
-        phones.add(new Phone ("Elite z3", "HP", R.drawable.pressure));
-        phones.add(new Phone ("Galaxy S8", "Samsung", R.drawable.humidity));
-        phones.add(new Phone ("LG G 5", "LG", R.drawable.wind));
+            jArr= new JSONArray(jsonString);
+
+
+
+        for(int i=0;i<jArr.length();i++) {
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = jArr.getJSONObject(i);
+
+            JSONObject main = jsonObject.getJSONObject("main");
+            Long updatedAt = jsonObject.getLong("dt");
+            JSONObject wind = jsonObject.getJSONObject("wind");
+            JSONObject weather = jsonObject.getJSONArray("weather").getJSONObject(0);
+
+
+            String temp = Convert.tempString(main.getString("temp"));
+            String updatedAtText = new SimpleDateFormat("HH", Locale.ENGLISH)
+                    .format(new Date(updatedAt * 1000));
+            String pressure = main.getString("pressure");
+            String humidity = main.getString("humidity");
+            String windSpeed = wind.getString("speed");
+            String weatherDescription = weather.getString("description");
+
+
+            weather_forecast.add(new Weather_model(updatedAtText,temp,weatherDescription,pressure,humidity,windSpeed));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+
+        }
     }
 
 

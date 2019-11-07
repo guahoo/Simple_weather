@@ -15,7 +15,7 @@
         android:textStyle="bold"
         android:typeface="sans" />
 
-    <ImageView
+    <TextView
         android:id="@+id/stroke_weather"
         android:layout_width="60dp"
         android:layout_height="40dp"
