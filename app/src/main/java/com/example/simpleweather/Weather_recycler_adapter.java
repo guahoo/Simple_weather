@@ -32,7 +32,11 @@ public class Weather_recycler_adapter extends RecyclerView.Adapter<Weather_recyc
         weather_icons_map.put("scattered clouds", R.drawable.ic_cloud);
         weather_icons_map.put("few clouds", R.drawable.ic_cloud);
         weather_icons_map.put("broken clouds", R.drawable.ic_cloud_sun);
+        weather_icons_map.put("light intensity drizzle", R.drawable.ic_cloud_sun);
+
         weather_icons_map.put("snow", R.drawable.ic_snow_alt);
+        weather_icons_map.put("mist",R.drawable.ic_fog);
+        weather_icons_map.put("fog",R.drawable.ic_fog);
         weather_icons_map.put("", R.drawable.ic_umbrella);
     }
 

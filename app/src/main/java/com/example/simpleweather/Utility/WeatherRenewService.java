@@ -46,6 +46,9 @@ public class WeatherRenewService extends Service {
         weather_icons_map.put("few clouds", R.drawable.ic_cloud);
         weather_icons_map.put("broken clouds", R.drawable.ic_cloud_sun);
         weather_icons_map.put("snow", R.drawable.ic_snow_alt);
+        weather_icons_map.put("light intensity drizzle", R.drawable.ic_cloud_sun);
+        weather_icons_map.put("mist",R.drawable.ic_fog);
+        weather_icons_map.put("fog",R.drawable.ic_fog);
         weather_icons_map.put("", R.drawable.ic_umbrella);
     }
 
@@ -60,6 +63,7 @@ public class WeatherRenewService extends Service {
     NotificationCompat.Builder builder;
     SharedPreferences sPrefs;
     Toast toast;
+    public Timer  time = new Timer();
 
 
     @Override
@@ -79,7 +83,7 @@ public class WeatherRenewService extends Service {
         toast = Toast.makeText(getApplicationContext(),
                 "Пора покормить кота!", Toast.LENGTH_LONG);
 
-        runTask();
+        runWeatherRenewTask();
     }
 
     @Override
@@ -163,10 +167,16 @@ public class WeatherRenewService extends Service {
     }
 
 
-    public void runTask() {
-        Timer time = new Timer();
+    public  void runWeatherRenewTask() {
+
         time.schedule(new DisplayToastTimerTask(), 0, 1000 * 60 * 60);
     }
+
+    public void stopWeatherRenewTask(){
+        time.cancel();
+
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void startMyOwnForeground() {
@@ -181,11 +191,11 @@ public class WeatherRenewService extends Service {
         @Override
         public void run() {
             new CurrentWeatherTask().execute();
-
             toast.show();
-
         }
     }
+
+
 
     //    private void startMyOwnForeground(){
 //        String NOTIFICATION_CHANNEL_ID = "1";
@@ -231,21 +241,7 @@ public class WeatherRenewService extends Service {
                 String weatherType = weather.getString("description");
 
                 String location = jsonObj.getString("name") + ", " + sys.getString("country");
-
-
-                long sunrise = sys.getLong("sunrise");
-                long sunset = sys.getLong("sunset");
-                long updatedAt = jsonObj.getLong("dt");
-
                 String temp = Convert.tempString(main.getString("temp"));
-
-
-                String tempMin = "Min Temp: " + Convert.tempString(main.getString("temp_min"));
-                String tempMax = "Max Temp: " + Convert.tempString(main.getString("temp_max"));
-
-                String updatedAtText = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ENGLISH)
-                        .format(new Date(updatedAt * 1000));
-
 
                 getMyActivityNotification(temp, weatherType, location);
                 updateNotification(temp, location, weatherType);

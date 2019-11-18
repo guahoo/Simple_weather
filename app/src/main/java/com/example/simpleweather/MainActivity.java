@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     Button addressButton;
     SharedPreferences sharedPreferences;
     String PREFERENCES;
-    static JSONArray jArr;
+    JSONArray jArr;
     private static final String NOTIF_CHANNEL_ID = "1";
     String API = "b542736e613d2382837ad821803eb507";
     private static int firstVisibleInListview;
@@ -74,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
     ImageView[] icons;
     WeatherBar weatherBar;
     NotificationManager notificationManager;
+    WeatherRenewService weatherRenewService;
+    ForecastWeather forecastWeather;
 
 
 
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
 
 
         init();
@@ -170,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void executeWeatherTask() {
         new CurrentWeatherTask().execute();
-        new ForecastWeatherTask().execute();
+        new ForecastWeather(this).execute();
 
 
 
@@ -246,13 +249,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    protected void onStart() {
-        super.onStart();
 
-    }
 
     protected void init() {
-        sharedPreferences = this.getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+
         pullToRefresh = findViewById(R.id.pullToRefresh);
         dialog_menu = new Dialog_menu(sharedPreferences, MainActivity.this);
 
@@ -284,6 +284,8 @@ public class MainActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
+
+        weatherRenewService=new WeatherRenewService();
     }
 
     public void initChannels(Context context) {
@@ -314,6 +316,8 @@ public class MainActivity extends AppCompatActivity {
     protected void startNotifyIntent() {
         if (isMyServiceRunning(WeatherRenewService.class)) {
             stopService(new Intent(this, WeatherRenewService.class));
+            weatherRenewService.stopWeatherRenewTask();
+
         }
 
         startService(new Intent(this, WeatherRenewService.class));
@@ -347,6 +351,7 @@ public class MainActivity extends AppCompatActivity {
                 String weatherType = weather.getString("description");
 
                 String location = jsonObj.getString("name") + ", " + sys.getString("country");
+                addressButton.setText(location);
 
                 jsonString = jsonObj.toString();
                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -381,8 +386,7 @@ public class MainActivity extends AppCompatActivity {
                 updateTxt.setText(updatedAtText);
 
 
-//                weatherBar.createNotificationChannel(temp,weatherType,location);
-//                weatherBar.updateNotification(temp,weatherType);
+
 
 
                 loader.setVisibility(View.GONE);
@@ -404,62 +408,62 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public class ForecastWeatherTask extends AsyncTask<String, Void, String> {
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            loader.setVisibility(View.VISIBLE);
-            errorText.setVisibility(View.GONE);
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-
-            return HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/forecast?q=" + sharedPreferences.
-                    getString("cityName", "Moscow") + "&units=metric&cnt=30&appid=" + API);
-        }
-
-        @Override
-        public void onPostExecute(String result) {
-            if (result == null) {
-                result = "allbegood";
-            }
-
-            try {
-                JSONObject jsonResult = new JSONObject(result);
-                jArr = jsonResult.getJSONArray("list");
-                JSONObject jLocation = jsonResult.getJSONObject("city");// Here we have the forecast for every day
-                // Here we have the forecast for every day
-                JSONObject jsonObj = jArr.getJSONObject(0);
-                jsonString = jArr.toString();
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("jsonArray", jsonString);
-                editor.apply();
-
-                String jsonString = sharedPreferences.getString("jsonArray", null);
-                String address = jLocation.getString("name") + ", " + jLocation.getString("country");
-                addressButton.setText(address);
-
-                try {
-                    jsonArray = new JSONArray(jsonString);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-
-                setInitialData();
-                setForecastDate(0);
-
-
-            } catch (JSONException e) {
-                findViewById(R.id.loader).setVisibility(View.GONE);
-                findViewById(R.id.errorText).setVisibility(View.VISIBLE);
-            }
-
-        }
-    }
+//    public class ForecastWeatherTask extends AsyncTask<String, Void, String> {
+//
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            loader.setVisibility(View.VISIBLE);
+//            errorText.setVisibility(View.GONE);
+//        }
+//
+//        @Override
+//        protected String doInBackground(String... strings) {
+//
+//            return HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/forecast?q=" + sharedPreferences.
+//                    getString("cityName", "Moscow") + "&units=metric&cnt=30&appid=" + API);
+//        }
+//
+//        @Override
+//        public void onPostExecute(String result) {
+//            if (result == null) {
+//                result = "allbegood";
+//            }
+//
+//            try {
+//                JSONObject jsonResult = new JSONObject(result);
+//                jArr = jsonResult.getJSONArray("list");
+//                JSONObject jLocation = jsonResult.getJSONObject("city");// Here we have the forecast for every day
+//                // Here we have the forecast for every day
+//                JSONObject jsonObj = jArr.getJSONObject(0);
+//                jsonString = jArr.toString();
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//                editor.putString("jsonArray", jsonString);
+//                editor.apply();
+//
+//                String jsonString = sharedPreferences.getString("jsonArray", null);
+//                String address = jLocation.getString("name") + ", " + jLocation.getString("country");
+//                addressButton.setText(address);
+//
+//                try {
+//                    jsonArray = new JSONArray(jsonString);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//
+//
+//                setInitialData();
+//                setForecastDate(0);
+//
+//
+//            } catch (JSONException e) {
+//                findViewById(R.id.loader).setVisibility(View.GONE);
+//                findViewById(R.id.errorText).setVisibility(View.VISIBLE);
+//            }
+//
+//        }
+//    }
 
 }
 
