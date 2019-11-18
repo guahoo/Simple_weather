@@ -1,14 +1,13 @@
-package com.example.simpleweather;
+package com.example.simpleweather.rm;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.simpleweather.R;
 import com.example.simpleweather.Utility.Convert;
 
 import org.json.JSONArray;

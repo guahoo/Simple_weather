@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="60dp"
+    android:layout_height="240dp"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/stroke_hour"
@@ -15,11 +16,12 @@
         android:textStyle="bold"
         android:typeface="sans" />
 
-    <TextView
+    <ImageView
         android:id="@+id/stroke_weather"
         android:layout_width="60dp"
         android:layout_height="40dp"
-        app:srcCompat="@drawable/ic_launcher_foreground"
+        android:padding="4dp"
+        app:srcCompat="@drawable/ic_sun"
         tools:ignore="VectorDrawableCompat" />
 
     <TextView

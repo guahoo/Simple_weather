@@ -9,23 +9,19 @@ import android.os.AsyncTask;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 import com.androdocs.httprequest.HttpRequest;
 import com.example.simpleweather.MainActivity;
 import com.example.simpleweather.R;
-import com.example.simpleweather.ViewPagerAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,11 +29,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 
 public class Dialog_menu {
@@ -47,6 +38,8 @@ public class Dialog_menu {
     ImageButton ok_button;
     EditText getCity;
     ListView bar;
+    RelativeLayout dialogLayout;
+    String API = "b542736e613d2382837ad821803eb507";
 
 
 
@@ -68,16 +61,21 @@ public class Dialog_menu {
         d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         Window window = d.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
-
         wlp.gravity = Gravity.TOP;
         wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         window.setAttributes(wlp);
+
+
         d.setContentView(R.layout.input_dialog);
+        dialogLayout = d.findViewById(R.id.dialog_layout);
         ok_button = d.findViewById(R.id.ok_Btn);
         getCity=d.findViewById(R.id.cityNameEditText);
-
-
+        getCity.setTextColor(context.getResources().getColor(R.color.blackTextColor));
         bar=d.findViewById(R.id.cityList);
+
+        if (sharedPreferences.getBoolean("day", false)) {
+            dialogLayout.setBackgroundResource(R.drawable.bg_gradient_day);
+        }
 
         ok_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,9 +85,6 @@ public class Dialog_menu {
                 editor.apply();
                 d.hide();
                 ((MainActivity)context).executeWeatherTask();
-
-
-
             }
         });
 
@@ -109,7 +104,7 @@ public class Dialog_menu {
     }
     public  class JSONSearchTask extends AsyncTask<String, Void, String> {
         String getCityName = getCity.getText().toString();
-        String API = "b542736e613d2382837ad821803eb507";
+
 
 
         @Override
@@ -144,7 +139,7 @@ public class Dialog_menu {
                     String country = sys.getString("country");
 
 
-                    getCityName.put("name",name+", "+country+", "+id);
+                    getCityName.put("name", name + ", " + country);
                     cityList.add(getCityName);
 
 

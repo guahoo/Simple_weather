@@ -9,10 +9,11 @@
 
 
     <RelativeLayout
+        android:id="@+id/dialog_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="?attr/actionBarSize"
-        android:background="@drawable/bg_gradient"
+        android:background="@drawable/bg_gradient_night"
         android:orientation="vertical"
         android:paddingBottom="30dp"
         android:paddingLeft="25dp"
@@ -26,6 +27,8 @@
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:hint="Бобруйск"
+            android:textColorHint="#FFBCC0CE"
+
 
             android:inputType="text"
             android:singleLine="true"

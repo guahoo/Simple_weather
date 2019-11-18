@@ -2,7 +2,7 @@ package com.example.simpleweather;
 
 public class Weather_model {
     String date_time,weather_type,temperature,
-    pressure,hudimity,wind;
+            pressure, humidity, wind;
 
     public Weather_model(String date_time, String weather_type,
                          String temperature, String pressure,
@@ -11,7 +11,7 @@ public class Weather_model {
         this.weather_type = weather_type;
         this.temperature = temperature;
         this.pressure = pressure;
-        this.hudimity = humidity;
+        this.humidity = humidity;
         this.wind = wind;
     }
 
@@ -48,11 +48,11 @@ public class Weather_model {
     }
 
     public String getHudimity() {
-        return hudimity;
+        return humidity;
     }
 
     public void setHudimity(String hudimity) {
-        this.hudimity = hudimity;
+        this.humidity = hudimity;
     }
 
     public String getWind() {
