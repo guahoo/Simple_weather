@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    android:id="@+id/dialog_layout_full">
 
 
     <RelativeLayout
@@ -27,12 +27,12 @@
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:hint="Бобруйск"
-            android:textColorHint="#FFBCC0CE"
-
-
             android:inputType="text"
+
+
             android:singleLine="true"
-            android:textSize="30sp" />
+            android:textColorHint="#FFBCC0CE"
+            android:textSize="23sp" />
 
 
         <ImageButton
@@ -48,12 +48,36 @@
             app:srcCompat="@drawable/ic_ok_button"
             tools:ignore="VectorDrawableCompat" />
 
+        <ImageButton
+            android:id="@+id/getLocationButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:background="@android:color/transparent"
+            android:layout_below="@+id/cityNameEditText"
+            android:layout_marginTop="25dp"
+
+            app:srcCompat="@android:drawable/presence_online" />
+
+        <ProgressBar
+            android:id="@+id/loaderCitylist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/ok_Btn"
+
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="@+id/ok_Btn"
+            android:progress="30"
+            android:visibility="invisible" />
+
         <ListView
             android:id="@+id/cityList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/cityNameEditText"
-            tools:ignore="NotSibling" />
+            tools:ignore="NotSibling">
+
+        </ListView>
 
 
     </RelativeLayout>

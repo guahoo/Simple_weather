@@ -14,239 +14,8 @@
         android:id="@+id/loader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone" />
-
-    <RelativeLayout
-        android:id="@+id/mainContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:visibility="visible">
-
-
-        <LinearLayout
-            android:id="@+id/sun_rise_set"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_marginTop="95dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/sun_rise_icon"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/sunrise"
-                android:tint="#FFFFFF" />
-
-            <TextView
-                android:id="@+id/sunRise_Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="Sunrise"
-                android:textSize="12dp" />
-
-            <TextView
-                android:id="@+id/sunrise"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="06:40 "
-                android:textSize="12sp" />
-
-            <Space
-                android:layout_width="50dp"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/sunset_Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sunset"
-                android:textSize="12dp" />
-
-            <TextView
-                android:id="@+id/sunset"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:text="18:40 "
-                android:textSize="12sp" />
-
-            <ImageView
-                android:id="@+id/sun_set_icon"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginStart="10dp"
-                android:src="@drawable/sunset"
-                android:tint="#FFFFFF" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/temp_min_max"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/currentTempContainer"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/temp_min"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:text="Min Temp: 05:05" />
-
-            <Space
-                android:layout_width="70dp"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/temp_max"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Max Temp: 05:05 " />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/currentTempContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="130dp"
-
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/updated_at"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-
-                android:text="20 April 2019, 20:08 "
-
-                android:textSize="14dp" />
-
-            <TextView
-                android:id="@+id/status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Clear Sky"
-                android:textSize="18dp" />
-
-            <TextView
-                android:id="@+id/temp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="sans-serif-thin"
-                android:text="29°C"
-                android:textSize="90dp" />
-        </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/list_view_forecast_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:id="@+id/forecast_layout"
-                android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:layout_alignParentBottom="true"
-                android:orientation="horizontal">
-
-
-                <LinearLayout
-                    android:layout_width="60dp"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:id="@+id/hour_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:padding="4dp"
-                        app:srcCompat="@drawable/ic_hour"
-                        tools:ignore="VectorDrawableCompat" />
-
-                    <ImageView
-                        android:id="@+id/weather_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:padding="4dp"
-                        app:srcCompat="@drawable/ic_umbrella"
-                        tools:ignore="VectorDrawableCompat" />
-
-                    <ImageView
-                        android:id="@+id/temp_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:padding="4dp"
-                        app:srcCompat="@drawable/ic_thermometer_3_4"
-                        tools:ignore="VectorDrawableCompat" />
-
-                    <ImageView
-                        android:id="@+id/pressure_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:padding="4dp"
-                        app:srcCompat="@drawable/pressure" />
-
-                    <ImageView
-                        android:id="@+id/hudimity_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:padding="4dp"
-                        app:srcCompat="@drawable/humidity" />
-
-                    <ImageView
-                        android:id="@+id/wind_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:padding="4dp"
-                        app:srcCompat="@drawable/wind" />
-                </LinearLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_forecast_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-
-                    android:orientation="horizontal"
-                    app:layoutManager="LinearLayoutManager" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/forecast_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/forecast_layout"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="14dp"
-                android:text="Forecast for: 21.08 Wednesday"
-                android:textAlignment="center"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </RelativeLayout>
-
-
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/errorText"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:gravity="center"
-        android:text="Что-то пошло не так, проверьте подключение к интернету"
         android:visibility="gone" />
-
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/pullToRefresh"
@@ -259,25 +28,280 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <RelativeLayout
+        android:id="@+id/mainContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="bottom">
+
             <LinearLayout
-                android:id="@+id/addressContainer"
+                android:id="@+id/currentWeatherCont"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_height="0dp"
+                android:layout_marginTop="0dp"
+                android:orientation="vertical"
+                android:layout_weight="1">
 
                 <Button
                     android:id="@+id/address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="Бобруйск, BY"
-                    android:textSize="24dp" />
+                    android:text="Your City"
+                    android:textSize="24dp"
+                    android:visibility="visible"
+                    android:layout_gravity="center"/>
+
+                <LinearLayout
+                    android:id="@+id/sun_rise_set"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/sun_rise_icon"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/sunrise"
+                        android:tint="#FFFFFF" />
+
+                    <TextView
+                        android:id="@+id/sunRise_Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:text="Sunrise"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:id="@+id/sunrise"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="06:40 "
+                        android:textSize="12sp" />
+
+                    <Space
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/sunset_Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sunset"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:id="@+id/sunset"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="18:40 "
+                        android:textSize="12sp" />
+
+                    <ImageView
+                        android:id="@+id/sun_set_icon"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginStart="10dp"
+                        android:src="@drawable/sunset"
+                        android:tint="#FFFFFF" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/updated_at"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+
+                    android:text="20 April 2019, 20:08 "
+
+                    android:textSize="14dp" />
+
+                <ImageView
+                    android:id="@+id/weather_Status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_sun"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"/>
+
+
+                <TextView
+                    android:id="@+id/temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="sans-serif-thin"
+                    android:text="29°C"
+                    android:textSize="90sp" />
+
+
+                <LinearLayout
+                    android:id="@+id/temp_min_max"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/temp_min"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Min Temp: 15" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/currentWindView"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="10dp"
+                            app:srcCompat="@drawable/wind" />
+
+                        <TextView
+                            android:id="@+id/windDirectionTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="N"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/temp_max"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Max Temp: 15" />
+                </LinearLayout>
+
             </LinearLayout>
-        </ScrollView>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <TextView
+                android:id="@+id/forecast_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
+                android:layout_gravity="center"
+                android:text="Forecast for: 21.08 Wednesday"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:id="@+id/list_view_forecast_container"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_marginBottom="0dp">
+
+                <LinearLayout
+                    android:id="@+id/forecast_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="0dp"
+                    android:orientation="horizontal">
 
 
+                    <LinearLayout
+                        android:layout_width="60dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/hour_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:padding="4dp"
+                            app:srcCompat="@drawable/ic_hour"
+                            tools:ignore="VectorDrawableCompat" />
+
+                        <ImageView
+                            android:id="@+id/weather_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:padding="4dp"
+                            app:srcCompat="@drawable/ic_umbrella"
+                            tools:ignore="VectorDrawableCompat" />
+
+                        <ImageView
+                            android:id="@+id/temp_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:padding="4dp"
+                            app:srcCompat="@drawable/ic_thermometer_3_4"
+                            tools:ignore="VectorDrawableCompat" />
+
+                        <ImageView
+                            android:id="@+id/pressure_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:padding="4dp"
+                            app:srcCompat="@drawable/pressure" />
+
+                        <ImageView
+                            android:id="@+id/hudimity_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:padding="4dp"
+                            app:srcCompat="@drawable/humidity" />
+
+                        <ImageView
+                            android:id="@+id/wind_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:padding="4dp"
+                            app:srcCompat="@drawable/wind" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_forecast_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+
+                        android:orientation="horizontal"
+                        app:layoutManager="LinearLayoutManager" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/errorText"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="Что-то пошло не так, проверьте подключение к интернету"
+        android:visibility="gone" />
 
 
 </RelativeLayout>

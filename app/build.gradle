@@ -1,6 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -21,9 +32,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
+
 dependencies {
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation("com.byteowls:jopencage:1.2.1")
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "androidx.viewpager:viewpager:1.0.0"
@@ -41,4 +56,9 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     implementation 'com.github.androdocs:Simple-HTTP-Request:v1.0'
+
+
+
+
+
 }

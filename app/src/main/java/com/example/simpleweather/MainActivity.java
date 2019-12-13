@@ -7,7 +7,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -17,10 +16,10 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.androdocs.httprequest.HttpRequest;
 import com.example.simpleweather.Utility.Convert;
 import com.example.simpleweather.Utility.Dialog_menu;
 import com.example.simpleweather.Utility.WeatherBar;
+import com.example.simpleweather.Utility.WeatherIconMap;
 import com.example.simpleweather.Utility.WeatherRenewService;
 
 import org.json.JSONArray;
@@ -33,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -48,15 +48,11 @@ public class MainActivity extends AppCompatActivity {
     String PREFERENCES;
     JSONArray jArr;
     private static final String NOTIF_CHANNEL_ID = "1";
-    String API = "b542736e613d2382837ad821803eb507";
     private static int firstVisibleInListview;
     TextView tempTxt, temp_minTxt, temp_maxTxt, sunriseTxt,
-            sunsetTxt, updateTxt, forecast_date, errorText, weatherView,
-            sunsetView, sunRiseView;
-    ImageView sun_rise_icon, sun_set_icon, hour_View, weather_View, temp_View, pressure_View, humidity_View, wind_View;
-
-
-
+            sunsetTxt, updateTxt, forecast_date, errorText,
+            sunsetView, sunRiseView, windTextView;
+    ImageView sun_rise_icon, currentWeatherStatusView, sun_set_icon, hour_View, weather_View, temp_View, pressure_View, humidity_View, wind_View,current_Wind_View;
 
 
     ProgressBar loader;
@@ -68,16 +64,12 @@ public class MainActivity extends AppCompatActivity {
     RelativeLayout mainLayout, mainContainer;
     SwipeRefreshLayout pullToRefresh;
     Dialog_menu dialog_menu;
-
-    String updatedAtText_simplify;
     TextView[] textViews;
     ImageView[] icons;
     WeatherBar weatherBar;
     NotificationManager notificationManager;
     WeatherRenewService weatherRenewService;
-    ForecastWeather forecastWeather;
-
-
+    CurrentWeather currentWeather;
 
 
 
@@ -87,74 +79,57 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
-
-
         init();
-        weatherBar = new WeatherBar(getApplicationContext());
+        currentWeather = new CurrentWeather(this);
+
+
+
         notificationManager =
                 (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
 
-        String jSonArray = this.getResources().getString(R.string.jsonArray);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
         if (sharedPreferences.getAll().isEmpty()) {
-
-            editor.putString("jsonArray", jSonArray);
-            editor.putString("cityName", "Moscow");
-            editor.apply();
+            dialog_menu.showMenuDialog();
+        }else {
+            executeWeatherTask();
         }
 
-        String jsonString = sharedPreferences.getString("jsonArray", null);
-        textViews = new TextView[]{
-                tempTxt, temp_minTxt, temp_maxTxt, sunriseTxt,
-                sunsetTxt, updateTxt, forecast_date, errorText, weatherView,
-                sunRiseView, sunsetView
-        };
 
 
-        icons = new ImageView[]{sun_set_icon, sun_rise_icon, hour_View, weather_View, temp_View, pressure_View, humidity_View, wind_View};
-
-        try {
-            jsonArray = new JSONArray(jsonString);
-
-        } catch (JSONException e) {
-            loader.setVisibility(View.GONE);
-            errorText.setVisibility(View.VISIBLE);
-        }
-        executeWeatherTask();
 
 
         addressButton.setOnClickListener(v -> dialog_menu.showMenuDialog());
 
         pullToRefresh.setOnRefreshListener(() -> {
+            currentWeather=new CurrentWeather(this);
+            currentWeather.execute();
 
-            executeWeatherTask();
+            new ForecastWeather(this).execute();
+
             pullToRefresh.setRefreshing(false);
 
         });
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 int currentFirstVisible = layoutManager.findFirstVisibleItemPosition();
-
-
                 if (currentFirstVisible > firstVisibleInListview) {
                     try {
                         setForecastDate(currentFirstVisible);
                     } catch (JSONException e) {
+                        e.printStackTrace();
 
                     }
                 } else {
                     try {
                         setForecastDate(currentFirstVisible);
                     } catch (JSONException e) {
+                        e.printStackTrace();
 
                     }
                 }
-
                 firstVisibleInListview = currentFirstVisible;
             }
         });
@@ -167,14 +142,17 @@ public class MainActivity extends AppCompatActivity {
         long updatedAt = jsonObject.getLong("dt");
         String updatedAtText_date = new SimpleDateFormat("dd.MM EEEE", Locale.ENGLISH)
                 .format(new Date(updatedAt * 1000));
-        forecast_date.setText("Forecast for " + updatedAtText_date);
+        String forecastDate = ("Forecast for " + updatedAtText_date);
+        forecast_date.setText(forecastDate);
     }
 
 
     public void executeWeatherTask() {
-        new CurrentWeatherTask().execute();
-        new ForecastWeather(this).execute();
+        currentWeather = new CurrentWeather(this);
+        currentWeather.execute();
 
+
+        new ForecastWeather(this).execute();
 
 
     }
@@ -187,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         weather_forecast.clear();
         for (int i = 0; i < jArr.length(); i++) {
-            JSONObject jsonObject = null;
+            JSONObject jsonObject;
             try {
                 jsonObject = jArr.getJSONObject(i);
 
@@ -218,7 +196,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void set_day_night_background(long updatedAt, long rise, long set) {
+    public void setCurrentWeatherData() {
+        tempTxt.setText(currentWeather.getTemp());
+        temp_minTxt.setText(currentWeather.getTempMin());
+        temp_maxTxt.setText(currentWeather.getTempMax());
+        sunriseTxt.setText(new SimpleDateFormat("HH:mm ", Locale.ENGLISH).format(new Date(currentWeather.getSunrise() * 1000)));
+        sunsetTxt.setText(new SimpleDateFormat("HH:mm ", Locale.ENGLISH).format(new Date(currentWeather.getSunset() * 1000)));
+        currentWeatherStatusView.setImageResource(weather_type_set_icon(currentWeather.getWeatherType()));
+        updateTxt.setText(currentWeather.getUpdatedAtText());
+        addressButton.setText(sharedPreferences.getString("city_name","BABRYISK"));
+        windTextView.setText(currentWeather.windSpeed+"  "+currentWeather.windDirection);
+
+        loader.setVisibility(View.GONE);
+        mainContainer.setVisibility(View.VISIBLE);
+        addressButton.setVisibility(View.VISIBLE);
+        errorText.setVisibility(View.INVISIBLE);
+
+
+    }
+
+    protected void set_day_night_background(long updatedAt, long rise, long set) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
 
@@ -249,12 +246,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void soWeGotException() {
+        loader.setVisibility(View.GONE);
+        mainContainer.setVisibility(View.INVISIBLE);
+        errorText.setVisibility(View.VISIBLE);
+        addressButton.setText("YOUR CITY");
+        dialog_menu.showMenuDialog();
+
+    }
 
 
     protected void init() {
 
         pullToRefresh = findViewById(R.id.pullToRefresh);
         dialog_menu = new Dialog_menu(sharedPreferences, MainActivity.this);
+
 
 
         mainLayout = findViewById(R.id.mainRelativeLayout);
@@ -269,14 +275,16 @@ public class MainActivity extends AppCompatActivity {
         loader = findViewById(R.id.loader);
         errorText = findViewById(R.id.errorText);
         forecast_date = findViewById(R.id.forecast_date);
-        weatherView = findViewById(R.id.status);
+        currentWeatherStatusView = findViewById(R.id.weather_Status);
         sunRiseView = findViewById(R.id.sunRise_Title);
         sunsetView = findViewById(R.id.sunset_Title);
         sun_rise_icon = findViewById(R.id.sun_rise_icon);
         sun_set_icon = findViewById(R.id.sun_set_icon);
+        current_Wind_View=findViewById(R.id.currentWindView);
         hour_View = findViewById(R.id.hour_view);
         weather_View = findViewById(R.id.weather_view);
         temp_View = findViewById(R.id.temp_view);
+        windTextView =findViewById(R.id.windDirectionTextView);
         pressure_View = findViewById(R.id.pressure_view);
         humidity_View = findViewById(R.id.hudimity_view);
         wind_View = findViewById(R.id.wind_view);
@@ -284,8 +292,22 @@ public class MainActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
+        weatherRenewService = new WeatherRenewService();
 
-        weatherRenewService=new WeatherRenewService();
+        loader.setVisibility(View.VISIBLE);
+        mainContainer.setVisibility(View.INVISIBLE);
+
+        textViews = new TextView[]{
+                tempTxt, temp_minTxt, temp_maxTxt, sunriseTxt,
+                sunsetTxt, updateTxt, forecast_date, errorText,
+                sunRiseView, sunsetView, windTextView
+        };
+        addressButton.setText("PLEASE WAIT...");
+
+
+        icons = new ImageView[]{sun_set_icon, sun_rise_icon, currentWeatherStatusView,hour_View, weather_View, temp_View, pressure_View, humidity_View, wind_View,current_Wind_View};
+        weatherBar = new WeatherBar(getApplicationContext());
+
     }
 
     public void initChannels(Context context) {
@@ -296,175 +318,34 @@ public class MainActivity extends AppCompatActivity {
             channel = new NotificationChannel("1", NOTIF_CHANNEL_ID, NotificationManager.IMPORTANCE_DEFAULT);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channel.setDescription("Channel description");
+            channel.setDescription("Weather channel");
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            assert notificationManager != null;
             notificationManager.createNotificationChannel(channel);
         }
     }
 
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
+    private boolean isMyServiceRunning() {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
+            if (WeatherRenewService.class.getName().equals(service.service.getClassName())) {
                 return true;
             }
         }
         return false;
     }
 
-    protected void startNotifyIntent() {
-        if (isMyServiceRunning(WeatherRenewService.class)) {
+    public void startNotifyIntent() {
+        if (isMyServiceRunning()) {
             stopService(new Intent(this, WeatherRenewService.class));
             weatherRenewService.stopWeatherRenewTask();
-
         }
-
         startService(new Intent(this, WeatherRenewService.class));
 
     }
-
-    public class CurrentWeatherTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... args) {
-            String response = HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/weather?q=" +
-                    sharedPreferences.getString("cityName", "Moscow") + "&units=metric&appid=" + API);
-            return response;
-        }
-
-        @Override
-        public void onPostExecute(String result) {
-
-            if (result == null) {
-                result = "allbegood";
-            }
-
-
-            try {
-                JSONObject jsonObj = new JSONObject(result);
-                JSONObject main = jsonObj.getJSONObject("main");
-                JSONObject sys = jsonObj.getJSONObject("sys");
-
-
-                JSONObject weather = jsonObj.getJSONArray("weather").getJSONObject(0);
-                String weatherType = weather.getString("description");
-
-                String location = jsonObj.getString("name") + ", " + sys.getString("country");
-                addressButton.setText(location);
-
-                jsonString = jsonObj.toString();
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("jsonObj", jsonString);
-                editor.apply();
-
-
-                long sunrise = sys.getLong("sunrise");
-                long sunset = sys.getLong("sunset");
-                long updatedAt = jsonObj.getLong("dt");
-
-                String temp = Convert.tempString(main.getString("temp"));
-                editor.putString("temp", temp);
-                editor.apply();
-
-
-                String tempMin = "Min Temp: " + Convert.tempString(main.getString("temp_min"));
-                String tempMax = "Max Temp: " + Convert.tempString(main.getString("temp_max"));
-
-                String updatedAtText = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ENGLISH)
-                        .format(new Date(updatedAt * 1000));
-
-                updatedAtText_simplify = new SimpleDateFormat("HH:mm", Locale.ENGLISH)
-                        .format(new Date(updatedAt * 1000));
-
-                tempTxt.setText(temp);
-                temp_minTxt.setText(tempMin);
-                temp_maxTxt.setText(tempMax);
-                sunriseTxt.setText(new SimpleDateFormat("HH:mm ", Locale.ENGLISH).format(new Date(sunrise * 1000)));
-                sunsetTxt.setText(new SimpleDateFormat("HH:mm ", Locale.ENGLISH).format(new Date(sunset * 1000)));
-                weatherView.setText(weatherType.toUpperCase());
-                updateTxt.setText(updatedAtText);
-
-
-
-
-
-                loader.setVisibility(View.GONE);
-                mainContainer.setVisibility(View.VISIBLE);
-
-                set_day_night_background(updatedAt, sunrise, sunset);
-
-                initChannels(MainActivity.this);
-                startNotifyIntent();
-
-            } catch (JSONException e) {
-                loader.setVisibility(View.GONE);
-                errorText.setVisibility(View.VISIBLE);
-                mainContainer.setVisibility(View.GONE);
-            }
-
-        }
-
+    public int weather_type_set_icon(String weather_model) {
+        return WeatherIconMap.weather_icons_map.get(WeatherIconMap.weather_icons_map.containsKey(weather_model) ? weather_model : "");
 
     }
-
-//    public class ForecastWeatherTask extends AsyncTask<String, Void, String> {
-//
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            loader.setVisibility(View.VISIBLE);
-//            errorText.setVisibility(View.GONE);
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... strings) {
-//
-//            return HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/forecast?q=" + sharedPreferences.
-//                    getString("cityName", "Moscow") + "&units=metric&cnt=30&appid=" + API);
-//        }
-//
-//        @Override
-//        public void onPostExecute(String result) {
-//            if (result == null) {
-//                result = "allbegood";
-//            }
-//
-//            try {
-//                JSONObject jsonResult = new JSONObject(result);
-//                jArr = jsonResult.getJSONArray("list");
-//                JSONObject jLocation = jsonResult.getJSONObject("city");// Here we have the forecast for every day
-//                // Here we have the forecast for every day
-//                JSONObject jsonObj = jArr.getJSONObject(0);
-//                jsonString = jArr.toString();
-//                SharedPreferences.Editor editor = sharedPreferences.edit();
-//                editor.putString("jsonArray", jsonString);
-//                editor.apply();
-//
-//                String jsonString = sharedPreferences.getString("jsonArray", null);
-//                String address = jLocation.getString("name") + ", " + jLocation.getString("country");
-//                addressButton.setText(address);
-//
-//                try {
-//                    jsonArray = new JSONArray(jsonString);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//
-//
-//                setInitialData();
-//                setForecastDate(0);
-//
-//
-//            } catch (JSONException e) {
-//                findViewById(R.id.loader).setVisibility(View.GONE);
-//                findViewById(R.id.errorText).setVisibility(View.VISIBLE);
-//            }
-//
-//        }
-//    }
-
 }
-
-

@@ -16,7 +16,7 @@
             android:layout_height="wrap_content" android:orientation="vertical"
             android:layout_centerInParent="true">
 
-            <TextView android:id="@+id/status" android:layout_width="wrap_content"
+            <TextView android:id="@+id/weather_Status" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:textSize="18dp"
                 android:layout_gravity="center"
                 android:text="Clear Sky"/>

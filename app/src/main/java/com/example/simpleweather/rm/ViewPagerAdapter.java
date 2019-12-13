@@ -84,7 +84,7 @@ public class ViewPagerAdapter extends PagerAdapter {
             windTxt = itemView.findViewById(R.id.wind);
             pressureTxt = itemView.findViewById(R.id.pressure);
             humidityTxt = itemView.findViewById(R.id.humidity);
-            statusTxt = itemView.findViewById(R.id.status);
+            statusTxt = itemView.findViewById(R.id.weather_Status);
 
 
 
