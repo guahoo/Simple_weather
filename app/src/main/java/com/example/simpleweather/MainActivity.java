@@ -49,9 +49,8 @@ public class MainActivity extends AppCompatActivity {
     JSONArray jArr;
     private static final String NOTIF_CHANNEL_ID = "1";
     private static int firstVisibleInListview;
-    TextView tempTxt, temp_minTxt, temp_maxTxt, sunriseTxt,
-            sunsetTxt, updateTxt, forecast_date, errorText,
-            sunsetView, sunRiseView, windTextView;
+    TextView tempTxt,  sunriseTxt,
+            sunsetTxt, updateTxt, forecast_date, errorText, windTextView;
     ImageView sun_rise_icon, currentWeatherStatusView, sun_set_icon, hour_View, weather_View, temp_View, pressure_View, humidity_View, wind_View,current_Wind_View;
 
 
@@ -140,10 +139,10 @@ public class MainActivity extends AppCompatActivity {
         jsonArray = new JSONArray(jsonString);
         JSONObject jsonObject = jsonArray.getJSONObject(i);
         long updatedAt = jsonObject.getLong("dt");
-        String updatedAtText_date = new SimpleDateFormat("dd.MM EEEE", Locale.ENGLISH)
-                .format(new Date(updatedAt * 1000));
-        String forecastDate = ("Forecast for " + updatedAtText_date);
-        forecast_date.setText(forecastDate);
+
+        String updatedAtText_date = new SimpleDateFormat("dd.MM EEEE",Locale.getDefault())
+                .format(new Date(updatedAt * 1000)).toUpperCase();
+        forecast_date.setText((updatedAtText_date));
     }
 
 
@@ -164,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
         adapter = new Weather_recycler_adapter(this, weather_forecast);
         recyclerView.setAdapter(adapter);
         weather_forecast.clear();
+
         for (int i = 0; i < jArr.length(); i++) {
             JSONObject jsonObject;
             try {
@@ -198,14 +198,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void setCurrentWeatherData() {
         tempTxt.setText(currentWeather.getTemp());
-        temp_minTxt.setText(currentWeather.getTempMin());
-        temp_maxTxt.setText(currentWeather.getTempMax());
         sunriseTxt.setText(new SimpleDateFormat("HH:mm ", Locale.ENGLISH).format(new Date(currentWeather.getSunrise() * 1000)));
         sunsetTxt.setText(new SimpleDateFormat("HH:mm ", Locale.ENGLISH).format(new Date(currentWeather.getSunset() * 1000)));
         currentWeatherStatusView.setImageResource(weather_type_set_icon(currentWeather.getWeatherType()));
         updateTxt.setText(currentWeather.getUpdatedAtText());
         addressButton.setText(sharedPreferences.getString("city_name","BABRYISK"));
-        windTextView.setText(currentWeather.windSpeed+"  "+currentWeather.windDirection);
+        windTextView.setText(currentWeather.windSpeed + currentWeather.windDirection);
 
         loader.setVisibility(View.GONE);
         mainContainer.setVisibility(View.VISIBLE);
@@ -250,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
         loader.setVisibility(View.GONE);
         mainContainer.setVisibility(View.INVISIBLE);
         errorText.setVisibility(View.VISIBLE);
-        addressButton.setText("YOUR CITY");
+        addressButton.setText(getResources().getString(R.string.your_city));
         dialog_menu.showMenuDialog();
 
     }
@@ -267,8 +265,7 @@ public class MainActivity extends AppCompatActivity {
         mainContainer = findViewById(R.id.mainContainer);
         addressButton = findViewById(R.id.address);
         tempTxt = findViewById(R.id.temp);
-        temp_minTxt = findViewById(R.id.temp_min);
-        temp_maxTxt = findViewById(R.id.temp_max);
+
         sunriseTxt = findViewById(R.id.sunrise);
         sunsetTxt = findViewById(R.id.sunset);
         updateTxt = findViewById(R.id.updated_at);
@@ -276,8 +273,7 @@ public class MainActivity extends AppCompatActivity {
         errorText = findViewById(R.id.errorText);
         forecast_date = findViewById(R.id.forecast_date);
         currentWeatherStatusView = findViewById(R.id.weather_Status);
-        sunRiseView = findViewById(R.id.sunRise_Title);
-        sunsetView = findViewById(R.id.sunset_Title);
+
         sun_rise_icon = findViewById(R.id.sun_rise_icon);
         sun_set_icon = findViewById(R.id.sun_set_icon);
         current_Wind_View=findViewById(R.id.currentWindView);
@@ -298,14 +294,15 @@ public class MainActivity extends AppCompatActivity {
         mainContainer.setVisibility(View.INVISIBLE);
 
         textViews = new TextView[]{
-                tempTxt, temp_minTxt, temp_maxTxt, sunriseTxt,
+                tempTxt, sunriseTxt,
                 sunsetTxt, updateTxt, forecast_date, errorText,
-                sunRiseView, sunsetView, windTextView
+                windTextView
         };
-        addressButton.setText("PLEASE WAIT...");
+        addressButton.setText(getResources().getString(R.string.please_wait));
 
 
-        icons = new ImageView[]{sun_set_icon, sun_rise_icon, currentWeatherStatusView,hour_View, weather_View, temp_View, pressure_View, humidity_View, wind_View,current_Wind_View};
+        icons = new ImageView[]{sun_set_icon, sun_rise_icon, currentWeatherStatusView,hour_View,
+                weather_View, temp_View, pressure_View, humidity_View, wind_View,current_Wind_View};
         weatherBar = new WeatherBar(getApplicationContext());
 
     }

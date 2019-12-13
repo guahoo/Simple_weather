@@ -102,7 +102,7 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
 
 
             setWindDirection(Integer.parseInt(wind.getString("deg")));
-            windSpeed =wind.getString("speed");
+            windSpeed =wind.getString("speed")+" ";
 
 
 
