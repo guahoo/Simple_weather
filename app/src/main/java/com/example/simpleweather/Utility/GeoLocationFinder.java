@@ -9,25 +9,19 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.simpleweather.MainActivity;
-import com.example.simpleweather.NominativeConnect;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 public final class GeoLocationFinder implements LocationListener {
@@ -70,7 +64,7 @@ public final class GeoLocationFinder implements LocationListener {
                                 longitude= String.valueOf((location.getLongitude()));
 
 
-                              new SearchByGeoposition(context,sharedPreferences).execute();
+                              new searchByGeoposition(context,sharedPreferences).execute();
 
 
                             }

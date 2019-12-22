@@ -120,7 +120,8 @@
 
                     android:text="20 April 2019, 20:08 "
 
-                    android:textSize="14dp" />
+                    android:textSize="17dp"
+                    android:textStyle="bold"/>
 
                 <ImageView
                     android:id="@+id/weather_Status"

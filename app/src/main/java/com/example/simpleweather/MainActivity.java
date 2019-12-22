@@ -87,11 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
 
-        if (sharedPreferences.getAll().isEmpty()) {
-            dialog_menu.showMenuDialog();
-        }else {
-            executeWeatherTask();
-        }
+
 
 
 
@@ -132,6 +128,16 @@ public class MainActivity extends AppCompatActivity {
                 firstVisibleInListview = currentFirstVisible;
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (sharedPreferences.getAll().isEmpty()) {
+            dialog_menu.showMenuDialog();
+        }else {
+            executeWeatherTask();
+        }
     }
 
     public void setForecastDate(int i) throws JSONException {

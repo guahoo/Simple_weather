@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
 
 
@@ -127,6 +128,10 @@ public class Dialog_menu {
 
     public class SearchLocationNameTask extends AsyncTask<String, Void, String> {
         String getCityName = getCity.getText().toString();
+        String locale = Locale.getDefault().getLanguage();
+                ;
+        final static String URL_REQUEST_FORECAST=
+                "https://nominatim.openstreetmap.org/search?city=%s&format=json&place=city&accept-language=%s";
 
         @Override
         protected void onPreExecute() {
@@ -139,8 +144,7 @@ public class Dialog_menu {
 
 
 
-                return NominativeConnect.excuteGet("https://nominatim.openstreetmap.org/search?city="
-                        + getCityName + "&format=json&place=city");
+                return NominativeConnect.excuteGet(String.format(URL_REQUEST_FORECAST,getCityName,locale));
 
         }
 
@@ -265,10 +269,4 @@ public class Dialog_menu {
 
 
     }
-    public boolean isConnected() throws InterruptedException, IOException {
-        final String command = "ping -c 1 google.com";
-        return Runtime.getRuntime().exec(command).waitFor() == 0;
-    }
-
-
 }

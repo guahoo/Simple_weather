@@ -3,9 +3,6 @@ package com.example.simpleweather;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.androdocs.httprequest.HttpRequest;
 

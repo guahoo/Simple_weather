@@ -17,20 +17,12 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.androdocs.httprequest.HttpRequest;
-import com.example.simpleweather.CurrentWeather;
 import com.example.simpleweather.MainActivity;
 import com.example.simpleweather.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-
-import java.util.Locale;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
@@ -39,6 +31,7 @@ import java.util.regex.Pattern;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
+@SuppressWarnings("deprecation")
 public class WeatherRenewService extends Service {
     private static final int NOTIF_ID = 1;
 
@@ -134,7 +127,7 @@ public class WeatherRenewService extends Service {
     }
 
     public void updateNotification(String temp, String location, String weatherType) {
-        Notification notification = null;
+        Notification notification;
 
         notification = getMyActivityNotification(temp, location, weatherType);
 
@@ -164,7 +157,7 @@ public class WeatherRenewService extends Service {
 
     public void runWeatherRenewTask() {
 
-        time.schedule(new DisplayToastTimerTask(), 0, 1000 * 60 * 60);
+        time.schedule(new DisplayToastTimerTask(), 0, 1000 * 60 * 30);
     }
 
     public void stopWeatherRenewTask() {
@@ -192,34 +185,34 @@ public class WeatherRenewService extends Service {
 
 
     public class CurrentWeatherTask extends AsyncTask<String, Void, String> {
+        final static String URL_REQUEST_FORECAST = "https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&units=metric&cnt=1&appid=%s";
+
 
         @Override
         protected String doInBackground(String... args) {
-            String response = HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/weather?" + "lat=" +
-                    sharedPreferences.getString("cityLat", "55") + "&" + "lon=" + sharedPreferences.getString("cityLon", "55") + "&units=metric&appid=" + API);
-            return response;
+            String cityLat = sharedPreferences.getString("cityLat", "55");
+            String cityLon = sharedPreferences.getString("cityLon", "55");
+
+            return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST,cityLat,cityLon,API));
         }
 
         @Override
         public void onPostExecute(String result) {
 
             if (result == null) {
-                result = "allbegood";
+                weather_type_set_icon("");
             }
 
             try {
+                assert result != null;
                 JSONObject jsonObj = new JSONObject(result);
                 JSONObject main = jsonObj.getJSONObject("main");
-                JSONObject sys = jsonObj.getJSONObject("sys");
                 JSONObject weather = jsonObj.getJSONArray("weather").getJSONObject(0);
                 String temp = Convert.tempString(main.getString("temp"));
                 String location = sharedPreferences.getString("city_name", "MINSK");
 
 
                 String weatherType = weather.getString("description");
-                long updatedAt = jsonObj.getLong("dt");
-                String updatedAtText = new SimpleDateFormat("HH", Locale.ENGLISH)
-                        .format(new Date(updatedAt * 1000));
 
 
 
@@ -241,6 +234,9 @@ public class WeatherRenewService extends Service {
 
 
             } catch (JSONException e) {
+                updateNotification("Нет сети","","");
+
+
 
             }
 
@@ -259,18 +255,10 @@ public class WeatherRenewService extends Service {
         Context context;
         String windSpeed;
 
-        public String getWindSpeed() {
-            return windSpeed;
-        }
-
-        public String getWeatherDescription() {
-            return weatherDescription;
-        }
 
 
 
-
-        public ForecastWeather(Context context) {
+        ForecastWeather(Context context) {
             this.context = context;
         }
 
@@ -294,35 +282,30 @@ public class WeatherRenewService extends Service {
         @Override
         public void onPostExecute(String result) {
             if (result == null) {
-                result = "allbegood";
+                updateNotification("Нет сети","","");
             }
 
             try {
+                assert result != null;
                 JSONObject jsonResult = new JSONObject(result);
                 jArr = jsonResult.getJSONArray("list");
 
 
             } catch (JSONException e) {
+                updateNotification("Нет сети","","");
 
             }
 
                 JSONObject jsonObject;
                 try {
                     jsonObject = jArr.getJSONObject(0);
-                    JSONObject main = jsonObject.getJSONObject("main");
-                    long updatedAt = jsonObject.getLong("dt");
                     JSONObject wind = jsonObject.getJSONObject("wind");
                     JSONObject weather = jsonObject.getJSONArray("weather").getJSONObject(0);
 
 
-                    String temp = Convert.tempString(main.getString("temp"));
-                    String pressure = main.getString("pressure");
-                    String humidity = main.getString("humidity");
-
                     windSpeed = wind.getString("speed");
                     weatherDescription = weather.getString("description");
-                    String updatedAtText_hour = new SimpleDateFormat("HH", Locale.ENGLISH)
-                            .format(new Date(updatedAt * 1000));
+
 
                     if (weatherDescription.matches("rain|shower rain|light rain|snow|light snow")){
                         weatherDescription=weatherDescription+"_alert";}

@@ -118,7 +118,7 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
             tempMin = "Min Temp: " + Convert.tempString(main.getString("temp_min"));
             tempMax = "Max Temp: " + Convert.tempString(main.getString("temp_max"));
 
-            updatedAtText = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ENGLISH)
+            updatedAtText = new SimpleDateFormat("HH:mm", Locale.ENGLISH)
                     .format(new Date(updatedAt * 1000));
 
 
@@ -161,7 +161,7 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
             windDirection = "W";
         } else if (wind >= 10 && wind <= 80) {
             windDirection = "NE";
-        } else if (wind >= 110 && wind <= 170) {
+        } else if (wind >= 100 && wind <= 170) {
             windDirection = "SE";
         } else if (wind >= 190 && wind <= 260) {
             windDirection = "SW";

@@ -15,18 +15,18 @@ import org.json.JSONObject;
 import java.util.Locale;
 
 
-public class SearchByGeoposition extends AsyncTask<String, Void, String> {
+public class searchByGeoposition extends AsyncTask<String, Void, String> {
 
-    final static String URL_CITY_NAME_REQUEST = "https://nominatim.openstreetmap.org/reverse?lat=%s&lon=%s&format=json&zoom=18&addressdetails=10";
     protected NominativeConnect nominativeConnect;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     Context context;
     final static String API="835b77b309444de689cd7c07b675493e";
-    final static String URL_REQUEST_FORECAST= "https://api.opencagedata.com/geocode/v1/json?key="+API+"&q=%s&,&%s&pretty=1";
+    final static String URL_REQUEST_FORECAST= "https://api.opencagedata.com/geocode/v1/json?key="+API+"&q=%s"+","+"%s&pretty=5" +
+            "&no_annotations=1&language=%s";
 
 
-    public SearchByGeoposition(Context context, SharedPreferences sharedPreferences) {
+    public searchByGeoposition(Context context, SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
         this.context = context;
         nominativeConnect = new NominativeConnect();
@@ -43,14 +43,16 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... strings) {
 
-//        String latitude = "38.685898";
-//        String longitude ="55.378686";
+
+//        String latitude = GeoLocationFinder.getLatitude();
+//        String longitude =GeoLocationFinder.getLongitude();
+
         String latitude = GeoLocationFinder.getLatitude();
         String longitude =GeoLocationFinder.getLongitude();
+        String language = Locale.getDefault().getDisplayLanguage();
 
 
-//        return nominativeConnect.excuteGet(String.format(URL_CITY_NAME_REQUEST, latitude, longitude));
-        return HttpRequest.excuteGet("https://api.opencagedata.com/geocode/v1/json?key=835b77b309444de689cd7c07b675493e&q="+latitude+","+longitude+"&pretty=5&no_annotations=1&language="+Locale.getDefault().getDisplayLanguage());
+        return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST, latitude, longitude, language));
 
     }
 
@@ -59,7 +61,6 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
         JSONObject geoData= null;
         JSONObject placeInfo=null;
         JSONObject components=null;
-       // String shortPlaceName=null;
         String placeName=null;
         try {
             geoData = new JSONObject(result);
@@ -85,7 +86,7 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
                 }
             }
 
-           // shortPlaceName=placeName.split(",")[0];
+         
 
             Dialog_menu.weHaveGeoPosition = true;
 
