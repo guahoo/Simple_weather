@@ -25,10 +25,9 @@ import com.google.android.gms.location.LocationServices;
 import androidx.core.app.ActivityCompat;
 
 public final class GeoLocationFinder implements LocationListener {
-    int PERMISSION_ID = 44;
+    private int PERMISSION_ID = 44;
 
     FusedLocationProviderClient mFusedLocationClient;
-    TextView latTextView, lonTextView;
     Context context;
     SharedPreferences sharedPreferences;
 
@@ -66,10 +65,10 @@ public final class GeoLocationFinder implements LocationListener {
         mFusedLocationClient.getLastLocation().addOnCompleteListener(
                 task -> {
                     Location location = task.getResult();
-                    if (location == null) {
-                        requestNewLocationData();
-                        return;
-                    }
+//                    if (location == null) {
+                    requestNewLocationData();
+//                        return;
+//                    }
                     latitude = String.valueOf((location.getLatitude()));
                     longitude = String.valueOf((location.getLongitude()));
                     new searchByGeoposition(context, sharedPreferences).execute();
@@ -86,7 +85,7 @@ public final class GeoLocationFinder implements LocationListener {
 
 
     @SuppressLint("MissingPermission")
-    private void requestNewLocationData(){
+       public void requestNewLocationData(){
 //TODO: разобраться с обновлением местоположения
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -137,17 +136,6 @@ public final class GeoLocationFinder implements LocationListener {
                 LocationManager.NETWORK_PROVIDER
         );
     }
-
-
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_ID) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLastLocation();
-            }
-        }
-    }
-
 
 
     @Override

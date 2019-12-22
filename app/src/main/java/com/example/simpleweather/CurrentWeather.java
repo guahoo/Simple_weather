@@ -76,10 +76,12 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
     protected void onPreExecute() {
         super.onPreExecute();
         sharedPreferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
+        String cityLat=sharedPreferences.getString("cityLat", "55");
     }
 
     @Override
     protected String doInBackground(String... args) {
+
         String response = HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/weather?" +"lat="+
                 sharedPreferences.getString("cityLat", "55") +"&"+"lon="+ sharedPreferences.getString("cityLon", "55")+"&units=metric&appid=" + API);
         return response;
@@ -148,7 +150,7 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
     }
 
 
-    void setWindDirection(int wind) {
+   private void setWindDirection(int wind) {
         if (wind < 10 && wind >= 0) {
             windDirection = "N";
         } else if (wind <= 359 && wind > 350) {
