@@ -46,9 +46,10 @@ import static com.app.simpleweather.Utility.SearchByGeoposition.CITY_NAME;
 public class MainActivity extends AppCompatActivity {
 
 
+    public static final String ISADAY = "day";
     List<Weather_model> weather_forecast = new ArrayList<>();
     Button addressButton;
-    String PREFERENCES = "";
+    String PREFERENCES;
 
 
 
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        sharedPreferences = getSharedPreferences("asdfasdf", Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
 
 
         init();
@@ -174,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void setInitialData() throws JSONException {
+    public void setForecastInitialData() throws JSONException {
         jsonString = sharedPreferences.getString("jsonArray", null);
         jArr = new JSONArray(jsonString);
         firstVisibleInListview = layoutManager.findFirstVisibleItemPosition();
@@ -247,12 +248,26 @@ public class MainActivity extends AppCompatActivity {
     protected void set_day_night_background(long updatedAt, long rise, long set) {
         boolean dayNight = updatedAt > rise && updatedAt < set;
         setBackgroundGradientColor(dayNight);
+        setImageViewsColor(dayNight);
+        setTextViewsColor(dayNight);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(ISADAY, dayNight);
+        editor.apply();
+    }
 
-        if (updatedAt > rise && updatedAt < set) {
-            setDayNightColor(R.drawable.bg_gradient_day,R.color.blackTextColor,R.color.blackTextColor,true);
+    private void setTextViewsColor(boolean dayNight) {
+        int textViewsColor = dayNight ? R.color.blackTextColor : R.color.whiteColor;
+        for (TextView textViewTemp : textViews) {
+            textViewTemp.setTextColor(getResources().getColor(textViewsColor));
+        }
+        addressButton.setTextColor((getResources().getColor(textViewsColor)));
 
-        } else {
-             setDayNightColor(R.drawable.bg_gradient_night,R.color.whiteColor,R.color.whiteColor,false);
+    }
+
+    private void setImageViewsColor(boolean dayNight) {
+        int imagesColor = dayNight ? R.color.blackTextColor : R.color.whiteColor;
+        for (ImageView imageViewTemp : icons) {
+            imageViewTemp.setColorFilter(ContextCompat.getColor(this,imagesColor));
         }
     }
 
@@ -261,24 +276,6 @@ public class MainActivity extends AppCompatActivity {
         mainLayout.setBackgroundResource(backGroundColor);
     }
 
-    private void setDayNightColor(int backGroundColor,int buttonColor,int textViewColor, boolean dayNight) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        mainLayout.setBackgroundResource(backGroundColor);
-        addressButton.setTextColor((getResources().getColor(buttonColor)));
-        setTextImageViewsColor(textViews, icons, textViewColor);
-        editor.putBoolean("day", dayNight);
-        editor.apply();
-    }
-
-    public void setTextImageViewsColor(TextView[] textView, ImageView[] imageView, Integer i) {
-        for (TextView textViewTemp : textView) {
-            textViewTemp.setTextColor(getResources().getColor(i));
-        }
-        for (ImageView imageViewTemp : imageView) {
-            imageViewTemp.setColorFilter(ContextCompat.getColor(this, i));
-        }
-
-    }
 
     public void soWeGotException() {
         loader.setVisibility(View.GONE);

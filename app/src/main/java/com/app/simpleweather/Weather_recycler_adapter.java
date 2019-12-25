@@ -16,6 +16,8 @@ import java.util.List;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.app.simpleweather.MainActivity.ISADAY;
+
 public class Weather_recycler_adapter extends RecyclerView.Adapter<Weather_recycler_adapter.ViewHolder> {
 
 
@@ -91,7 +93,7 @@ public class Weather_recycler_adapter extends RecyclerView.Adapter<Weather_recyc
             humidity = view.findViewById(R.id.stroke_hudimity);
             wind = view.findViewById(R.id.stroke_wind);
             textViewsForecast = new TextView[]{date_time, temperature, pressure, humidity, wind};
-            if (sharedPreferences.getBoolean("day", false)) {
+            if (sharedPreferences.getBoolean(ISADAY, false)) {
                 setTextImageViewColor(textViewsForecast, weather_type, R.color.blackTextColor);
             } else {
                 setTextImageViewColor(textViewsForecast, weather_type, R.color.whiteColor);

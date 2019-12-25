@@ -55,7 +55,7 @@ public class ForecastWeather extends AsyncTask<String, Void, String> {
             editor.putString("jsonArray", jsonString);
             editor.apply();
 
-            ((MainActivity)context).setInitialData();
+            ((MainActivity)context).setForecastInitialData();
             ((MainActivity)context).setForecastDate(0);
 
 
