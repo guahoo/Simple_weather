@@ -1,4 +1,4 @@
-package com.example.simpleweather.Utility;
+package com.app.simpleweather.Utility;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -20,15 +20,14 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 
-import com.example.simpleweather.MainActivity;
-import com.example.simpleweather.NominativeConnect;
-import com.example.simpleweather.R;
+import com.app.simpleweather.MainActivity;
+import com.app.simpleweather.NominativeConnect;
+import com.app.simpleweather.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;

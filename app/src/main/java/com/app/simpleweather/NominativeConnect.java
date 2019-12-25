@@ -1,4 +1,4 @@
-package com.example.simpleweather;
+package com.app.simpleweather;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

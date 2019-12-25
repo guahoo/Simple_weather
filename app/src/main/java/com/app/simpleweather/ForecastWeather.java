@@ -1,4 +1,4 @@
-package com.example.simpleweather;
+package com.app.simpleweather;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,26 +11,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ForecastWeather extends AsyncTask<String, Void, String> {
-    JSONArray jArr;
-    SharedPreferences sharedPreferences;
-    String PREFERENCES;
-    String API = "b542736e613d2382837ad821803eb507";
-    Context context;
-    String jsonString;
+    private SharedPreferences sharedPreferences;
+    private  String PREFERENCES;
+    private Context context;
+    private String jsonString;
 
 
 
-    public ForecastWeather( Context context) {
+    ForecastWeather(Context context) {
         this.context=context;
     }
-    final static String URL_REQUEST_FORECAST= "https://api.openweathermap.org/data/2.5/forecast?lat=%s&lon=%s&units=metric&cnt=30&appid=%s";
+    private final static String URL_REQUEST_FORECAST= "https://api.openweathermap.org/data/2.5/forecast?lat=%s&lon=%s&units=metric&cnt=30&appid=%s";
 
 
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-            sharedPreferences = context.getSharedPreferences(PREFERENCES, context.MODE_PRIVATE);
+            sharedPreferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -38,18 +36,20 @@ public class ForecastWeather extends AsyncTask<String, Void, String> {
         String cityLat=sharedPreferences.getString("cityLat", "55");
         String cityLon=sharedPreferences.getString("cityLon", "55");
 
-        return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST,cityLat,cityLon,API));
+        String API = "b542736e613d2382837ad821803eb507";
+        return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST,cityLat,cityLon, API));
     }
 
     @Override
     public void onPostExecute(String result) {
         if (result == null) {
-            result = "allbegood";
+            ((MainActivity)context).soWeGotException();
         }
 
         try {
+            assert result != null;
             JSONObject jsonResult = new JSONObject(result);
-            jArr = jsonResult.getJSONArray("list");
+            JSONArray jArr = jsonResult.getJSONArray("list");
             jsonString = jArr.toString();
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("jsonArray", jsonString);
@@ -60,7 +60,7 @@ public class ForecastWeather extends AsyncTask<String, Void, String> {
 
 
         } catch (JSONException e) {
-
+            ((MainActivity)context).soWeGotException();
         }
 
     }

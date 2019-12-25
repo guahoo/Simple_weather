@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.simpleweather">
+    package="com.app.simpleweather">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -16,7 +16,7 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="donut">
     <activity
-        android:name=".MainActivity"
+        android:name="com.app.simpleweather.MainActivity"
         android:theme="@style/CustomTheme"
         android:screenOrientation="portrait">
         <intent-filter>
@@ -24,7 +24,7 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
-        <service android:name=".Utility.WeatherRenewService" />
+        <service android:name="com.app.simpleweather.Utility.WeatherRenewService" />
     </application>
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />

@@ -1,11 +1,11 @@
-package com.example.simpleweather;
+package com.app.simpleweather;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import com.androdocs.httprequest.HttpRequest;
-import com.example.simpleweather.Utility.Convert;
+import com.app.simpleweather.Utility.Convert;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,10 +76,12 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
     protected void onPreExecute() {
         super.onPreExecute();
         sharedPreferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
+        String cityLat=sharedPreferences.getString("cityLat", "55");
     }
 
     @Override
     protected String doInBackground(String... args) {
+
         String response = HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/weather?" +"lat="+
                 sharedPreferences.getString("cityLat", "55") +"&"+"lon="+ sharedPreferences.getString("cityLon", "55")+"&units=metric&appid=" + API);
         return response;
@@ -94,7 +96,7 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
 
 
         try {
-            JSONObject jsonObj = new JSONObject(result);
+             JSONObject jsonObj = new JSONObject(result);
             JSONObject main = jsonObj.getJSONObject("main");
             JSONObject sys = jsonObj.getJSONObject("sys");
             JSONObject wind = jsonObj.getJSONObject("wind");
@@ -102,7 +104,8 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
 
 
             setWindDirection(Integer.parseInt(wind.getString("deg")));
-            windSpeed =wind.getString("speed")+" ";
+            int windSpeedConverting=(int)Double.parseDouble(wind.getString("speed"));
+            windSpeed =(windSpeedConverting)+" ";
 
 
 
@@ -148,7 +151,7 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
     }
 
 
-    void setWindDirection(int wind) {
+   private void setWindDirection(int wind) {
         if (wind < 10 && wind >= 0) {
             windDirection = "N";
         } else if (wind <= 359 && wind > 350) {

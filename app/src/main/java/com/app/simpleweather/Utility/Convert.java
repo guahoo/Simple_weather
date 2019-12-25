@@ -1,4 +1,4 @@
-package com.example.simpleweather.Utility;
+package com.app.simpleweather.Utility;
 
 public class Convert {
 
