@@ -92,9 +92,6 @@ public class Dialog_menu {
         ok_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("cityName", getCity.getText().toString());
-                editor.apply();
                 d.hide();
                 ((MainActivity) context).executeWeatherTask();
             }

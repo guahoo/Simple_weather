@@ -7,7 +7,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -42,13 +41,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import static com.app.simpleweather.Utility.SearchByGeoposition.CITY_NAME;
+
 public class MainActivity extends AppCompatActivity {
 
 
     List<Weather_model> weather_forecast = new ArrayList<>();
     Button addressButton;
-    SharedPreferences sharedPreferences;
-    String PREFERENCES;
+    String PREFERENCES = "";
+
+
+
     JSONArray jArr;
     private static final String NOTIF_CHANNEL_ID = "1";
     private static int firstVisibleInListview;
@@ -73,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
     WeatherRenewService weatherRenewService;
     CurrentWeather currentWeather;
     String CITYNAME;
+    SharedPreferences sharedPreferences;
+
 
 
 
@@ -81,7 +86,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        sharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("asdfasdf", Context.MODE_PRIVATE);
+
 
         init();
         currentWeather = new CurrentWeather(this);
@@ -212,12 +218,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void setCurrentWeatherData() {
         tempTxt.setText(currentWeather.getTemp());
+        //TODO сделать через форматер
         sunriseTxt.setText(new SimpleDateFormat("HH:mm ", Locale.ENGLISH).format(new Date(currentWeather.getSunrise() * 1000)));
         sunsetTxt.setText(new SimpleDateFormat("HH:mm ", Locale.ENGLISH).format(new Date(currentWeather.getSunset() * 1000)));
         currentWeatherStatusView.setImageResource(weather_type_set_icon(currentWeather.getWeatherType()));
         updateTxt.setText(currentWeather.getUpdatedAtText());
-        CITYNAME=sharedPreferences.getString("city_name","BABRYISK");
-        addressButton.setText(CITYNAME);
+      //  CITYNAME=sharedPreferences.getString("city_name","BABRYISK");
+        addressButton.setText(sharedPreferences.getString(CITY_NAME,"BABRYISK"));
         setButtonTextSize();
 
 
@@ -238,23 +245,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void set_day_night_background(long updatedAt, long rise, long set) {
+        boolean dayNight = updatedAt > rise && updatedAt < set;
+        setBackgroundGradientColor(dayNight);
+
         if (updatedAt > rise && updatedAt < set) {
             setDayNightColor(R.drawable.bg_gradient_day,R.color.blackTextColor,R.color.blackTextColor,true);
+
         } else {
              setDayNightColor(R.drawable.bg_gradient_night,R.color.whiteColor,R.color.whiteColor,false);
         }
+    }
+
+    private void setBackgroundGradientColor(boolean dayNight){
+        int backGroundColor = dayNight ? R.drawable.bg_gradient_day : R.drawable.bg_gradient_night;
+        mainLayout.setBackgroundResource(backGroundColor);
     }
 
     private void setDayNightColor(int backGroundColor,int buttonColor,int textViewColor, boolean dayNight) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         mainLayout.setBackgroundResource(backGroundColor);
         addressButton.setTextColor((getResources().getColor(buttonColor)));
-        setTextColor(textViews, icons, textViewColor);
+        setTextImageViewsColor(textViews, icons, textViewColor);
         editor.putBoolean("day", dayNight);
         editor.apply();
     }
 
-    public void setTextColor(TextView[] textView, ImageView[] imageView, Integer i) {
+    public void setTextImageViewsColor(TextView[] textView, ImageView[] imageView, Integer i) {
         for (TextView textViewTemp : textView) {
             textViewTemp.setTextColor(getResources().getColor(i));
         }

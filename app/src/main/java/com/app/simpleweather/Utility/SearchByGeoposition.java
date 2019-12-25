@@ -31,7 +31,7 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
     private final static String NO_SIGNAL= "Нет сети";
     private final static String CITY_LAT= "cityLat";
     private final static String CITY_lON= "cityLon";
-    private final static String CITY_NAME= "city_name";
+    public final static String CITY_NAME= "city_name";
     private final static String COUNTY= "county";
     private String latitude;
     private String longitude;

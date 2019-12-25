@@ -33,8 +33,8 @@ public class ForecastWeather extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... strings) {
-        String cityLat=sharedPreferences.getString("cityLat", "55");
-        String cityLon=sharedPreferences.getString("cityLon", "55");
+        String cityLat=sharedPreferences.getString("cityLat", null);
+        String cityLon=sharedPreferences.getString("cityLon", null);
 
         String API = "b542736e613d2382837ad821803eb507";
         return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST,cityLat,cityLon, API));
