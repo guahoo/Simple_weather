@@ -66,9 +66,7 @@ public class searchByGeoposition extends AsyncTask<String, Void, String> {
         String longitude = GeoLocationFinder.getLongitude();
         String language = Locale.getDefault().getDisplayLanguage();
 
-
         return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST, latitude, longitude, language));
-
     }
 
     @Override
