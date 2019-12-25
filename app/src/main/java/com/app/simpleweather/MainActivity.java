@@ -1,4 +1,4 @@
-package com.example.simpleweather;
+package com.app.simpleweather;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
@@ -7,8 +7,10 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,12 +18,13 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.simpleweather.Utility.Convert;
-import com.example.simpleweather.Utility.Dialog_menu;
-import com.example.simpleweather.Utility.WeatherBar;
-import com.example.simpleweather.Utility.WeatherIconMap;
-import com.example.simpleweather.Utility.WeatherRenewService;
+import com.app.simpleweather.Utility.Convert;
+import com.app.simpleweather.Utility.Dialog_menu;
+import com.app.simpleweather.Utility.WeatherBar;
+import com.app.simpleweather.Utility.WeatherIconMap;
+import com.app.simpleweather.Utility.WeatherRenewService;
 
+import org.apache.commons.codec.binary.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     NotificationManager notificationManager;
     WeatherRenewService weatherRenewService;
     CurrentWeather currentWeather;
+    String CITYNAME;
 
 
 
@@ -78,8 +82,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
+
         init();
         currentWeather = new CurrentWeather(this);
+
 
 
 
@@ -187,11 +193,13 @@ public class MainActivity extends AppCompatActivity {
 
                 String pressure = main.getString("pressure");
                 String humidity = main.getString("humidity");
-                String windSpeed = wind.getString("speed");
+                int windSpeedConverting=(int)Double.parseDouble(wind.getString("speed"));
+                String windSpeed =String.valueOf(windSpeedConverting)+" ";
+                int windDirection =Integer.parseInt(wind.getString("deg"));
                 String weatherDescription = weather.getString("description");
 
 
-                weather_forecast.add(new Weather_model(updatedAtText_hour, weatherDescription, temp, pressure, humidity, windSpeed));
+                weather_forecast.add(new Weather_model(updatedAtText_hour, weatherDescription, temp, pressure, humidity, windSpeed,windDirection));
 
             } catch (JSONException e) {
                 findViewById(R.id.loader).setVisibility(View.GONE);
@@ -208,7 +216,12 @@ public class MainActivity extends AppCompatActivity {
         sunsetTxt.setText(new SimpleDateFormat("HH:mm ", Locale.ENGLISH).format(new Date(currentWeather.getSunset() * 1000)));
         currentWeatherStatusView.setImageResource(weather_type_set_icon(currentWeather.getWeatherType()));
         updateTxt.setText(currentWeather.getUpdatedAtText());
-        addressButton.setText(sharedPreferences.getString("city_name","BABRYISK"));
+        CITYNAME=sharedPreferences.getString("city_name","BABRYISK");
+        addressButton.setText(CITYNAME);
+        setButtonTextSize();
+
+
+        //addressButton.setTextSize();
         windTextView.setText(currentWeather.windSpeed + currentWeather.windDirection);
 
         loader.setVisibility(View.GONE);
@@ -219,25 +232,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void setButtonTextSize() {
+        int spaces = CITYNAME == null ? 0 : CITYNAME.replaceAll("[^ ]", "").length();
+        if (spaces>=2)addressButton.setTextSize(TypedValue.COMPLEX_UNIT_SP,20f);
+    }
+
     protected void set_day_night_background(long updatedAt, long rise, long set) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-
         if (updatedAt > rise && updatedAt < set) {
-
-            mainLayout.setBackgroundResource(R.drawable.bg_gradient_day);
-            addressButton.setTextColor((getResources().getColor(R.color.blackTextColor)));
-            setTextColor(textViews, icons, R.color.blackTextColor);
-            editor.putBoolean("day", true);
-            editor.apply();
+            setDayNightColor(R.drawable.bg_gradient_day,R.color.blackTextColor,R.color.blackTextColor,true);
         } else {
-            mainLayout.setBackgroundResource(R.drawable.bg_gradient_night);
-            addressButton.setTextColor((getResources().getColor(R.color.whiteColor)));
-            setTextColor(textViews, icons, R.color.whiteColor);
-            editor.putBoolean("day", false);
-            editor.apply();
+             setDayNightColor(R.drawable.bg_gradient_night,R.color.whiteColor,R.color.whiteColor,false);
         }
+    }
 
+    private void setDayNightColor(int backGroundColor,int buttonColor,int textViewColor, boolean dayNight) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        mainLayout.setBackgroundResource(backGroundColor);
+        addressButton.setTextColor((getResources().getColor(buttonColor)));
+        setTextColor(textViews, icons, textViewColor);
+        editor.putBoolean("day", dayNight);
+        editor.apply();
     }
 
     public void setTextColor(TextView[] textView, ImageView[] imageView, Integer i) {
@@ -264,13 +278,11 @@ public class MainActivity extends AppCompatActivity {
 
         pullToRefresh = findViewById(R.id.pullToRefresh);
         dialog_menu = new Dialog_menu(sharedPreferences, MainActivity.this);
-
-
-
         mainLayout = findViewById(R.id.mainRelativeLayout);
         mainContainer = findViewById(R.id.mainContainer);
         addressButton = findViewById(R.id.address);
         tempTxt = findViewById(R.id.temp);
+
 
         sunriseTxt = findViewById(R.id.sunrise);
         sunsetTxt = findViewById(R.id.sunset);
@@ -295,6 +307,8 @@ public class MainActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
         weatherRenewService = new WeatherRenewService();
+
+
 
         loader.setVisibility(View.VISIBLE);
         mainContainer.setVisibility(View.INVISIBLE);

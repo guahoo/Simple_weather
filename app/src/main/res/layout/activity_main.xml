@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:text="Your City"
-                    android:textSize="24dp"
+                    android:textSize="24sp"
                     android:visibility="visible"
                     android:layout_gravity="center"/>
 

@@ -1,4 +1,4 @@
-package com.example.simpleweather.Utility;
+package com.app.simpleweather.Utility;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -12,10 +12,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.simpleweather.MainActivity;
+import com.app.simpleweather.MainActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -69,9 +68,13 @@ public final class GeoLocationFinder implements LocationListener {
                     requestNewLocationData();
 //                        return;
 //                    }
-                    latitude = String.valueOf((location.getLatitude()));
-                    longitude = String.valueOf((location.getLongitude()));
-                    new searchByGeoposition(context, sharedPreferences).execute();
+                    try {
+                        latitude = String.valueOf((location.getLatitude()));
+                        longitude = String.valueOf((location.getLongitude()));
+                        new SearchByGeoposition(sharedPreferences).execute();
+                    }catch (NullPointerException npe){
+                        requestLastLocation();
+                    }
                 }
         );
         return true;

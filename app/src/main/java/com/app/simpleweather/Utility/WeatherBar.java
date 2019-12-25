@@ -1,4 +1,4 @@
-package com.example.simpleweather.Utility;
+package com.app.simpleweather.Utility;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -10,8 +10,8 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.widget.RemoteViews;
 
-import com.example.simpleweather.MainActivity;
-import com.example.simpleweather.R;
+import com.app.simpleweather.MainActivity;
+import com.app.simpleweather.R;
 
 import java.util.HashMap;
 import java.util.Map;

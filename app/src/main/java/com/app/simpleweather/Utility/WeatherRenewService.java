@@ -1,4 +1,4 @@
-package com.example.simpleweather.Utility;
+package com.app.simpleweather.Utility;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -17,8 +17,8 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.androdocs.httprequest.HttpRequest;
-import com.example.simpleweather.MainActivity;
-import com.example.simpleweather.R;
+import com.app.simpleweather.MainActivity;
+import com.app.simpleweather.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;

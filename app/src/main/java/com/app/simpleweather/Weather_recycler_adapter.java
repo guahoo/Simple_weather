@@ -1,4 +1,4 @@
-package com.example.simpleweather;
+package com.app.simpleweather;
 
 
 import android.content.Context;
@@ -9,11 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.simpleweather.Utility.WeatherIconMap;
+import com.app.simpleweather.Utility.WeatherIconMap;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,7 +55,7 @@ public class Weather_recycler_adapter extends RecyclerView.Adapter<Weather_recyc
         holder.temperature.setText(weather_model.getTemperature());
         holder.pressure.setText(weather_model.getPressure());
         holder.humidity.setText(weather_model.getHudimity());
-        holder.wind.setText(weather_model.getWind());
+        holder.wind.setText(weather_model.getWind()+weather_model.windDirection);
 
     }
 

@@ -1,6 +1,6 @@
-package com.example.simpleweather.Utility;
+package com.app.simpleweather.Utility;
 
-import com.example.simpleweather.R;
+import com.app.simpleweather.R;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +25,7 @@ public class WeatherIconMap {
         weather_icons_map.put("light snow", R.drawable.ic_snow_alt);
         weather_icons_map.put("light intensity drizzle", R.drawable.ic_cloud_sun);
         weather_icons_map.put("mist",R.drawable.ic_fog);
+        weather_icons_map.put("drizzle",R.drawable.ic_fog);
         weather_icons_map.put("fog",R.drawable.ic_fog);
         weather_icons_map.put("", R.drawable.ic_umbrella);
     }
