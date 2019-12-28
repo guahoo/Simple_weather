@@ -42,7 +42,7 @@ import static com.app.simpleweather.MainActivity.WIND;
 import static com.app.simpleweather.MainActivity.WINDSPEED;
 import static com.app.simpleweather.Utility.SearchByGeoposition.CITY_NAME;
 import static com.app.simpleweather.Utility.SearchByGeoposition.NO_SIGNAL;
-import static com.app.simpleweather.Utility.WeatherIconMap.RAIN;
+import static com.app.simpleweather.Utility.WeatherIconMap.getResourceIdent;
 
 @SuppressWarnings("deprecation")
 public class WeatherRenewService extends Service {
@@ -115,7 +115,7 @@ public class WeatherRenewService extends Service {
                 0, new Intent(context, MainActivity.class), 0);
         remoteViews.setTextViewText(R.id.forecastView_notificationBar, temp);
         remoteViews.setTextViewText(R.id.location_notificationBar, location);
-        remoteViews.setImageViewResource(R.id.weatherImage, weather_type_set_icon(weatherType));
+        remoteViews.setImageViewResource(R.id.weatherImage, getResourceIdent(weatherType));
 
 
 
@@ -124,7 +124,7 @@ public class WeatherRenewService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return new Notification.Builder(context)
 
-                    .setSmallIcon(weather_type_set_icon(weatherType))
+                    .setSmallIcon(getResourceIdent(weatherType))
                     .setContent(remoteViews)
                     .setOngoing(true)
                     .setChannelId(NOTIF_CHANNEL_ID)
@@ -186,11 +186,6 @@ public class WeatherRenewService extends Service {
     private void startMyOwnForeground() {
     }
 
-    public int weather_type_set_icon(String weather_model) {
-        return WeatherIconMap.weather_icons_map.get(WeatherIconMap.weather_icons_map.containsKey(weather_model) ? weather_model : "");
-
-    }
-
     private class DisplayToastTimerTask extends TimerTask {
         @Override
         public void run() {
@@ -216,7 +211,7 @@ public class WeatherRenewService extends Service {
         public void onPostExecute(String result) {
 
             if (result == null) {
-                weather_type_set_icon("");
+               soWeGotException();
             }
 
             try {
@@ -229,16 +224,9 @@ public class WeatherRenewService extends Service {
 
 
                 String weatherType = weather.getString(DESCRIPTION);
-
-
-
-                if (weatherDescription.matches(getResources().getString(R.string.alertWeatherType))){
-                    Pattern pattern = Pattern.compile(getResources().getString(R.string.alertWeatherType));
-                    Matcher matcher = pattern.matcher(weatherDescription);
-                    matcher.matches();
-                    matcher.groupCount();
-                    System.out.println();
-
+                Pattern pattern = Pattern.compile(getResources().getString(R.string.alertWeatherType));
+                Matcher matcher = pattern.matcher(weatherDescription);
+                if (matcher.matches()){
                     getMyActivityNotification(temp, location, matcher.group(0));
                     updateNotification(temp, location,matcher.group(0));
                 }else {

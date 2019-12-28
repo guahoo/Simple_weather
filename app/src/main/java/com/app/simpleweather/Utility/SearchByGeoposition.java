@@ -8,17 +8,16 @@ import com.androdocs.httprequest.HttpRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Locale;
+
 import static com.app.simpleweather.MainActivity.LATITUDE;
 import static com.app.simpleweather.MainActivity.LONGITUDE;
+import static com.app.simpleweather.Utility.Dialog_menu.weHaveGeoPosition;
 
 
 public class SearchByGeoposition extends AsyncTask<String, Void, String> {
     OftenUsedStrings oftenUsedStrings;
-
-
-
-
 
     private SharedPreferences.Editor editor;
     private final static String OPENSAGEDATA_API = OftenUsedStrings.OPENSAGEDATA_API.getOftenUsedString();
@@ -29,10 +28,10 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
     private final static String FORMATTED = OftenUsedStrings.FORMATTED.getOftenUsedString();
     private final static String COMPONENTS = OftenUsedStrings.COMPONENTS.getOftenUsedString();
     public final static String COMMA = OftenUsedStrings.COMMA.getOftenUsedString();
-    public final static String NO_SIGNAL= OftenUsedStrings.NO_SIGNAL.getOftenUsedString();
-    public final static String CITY_NAME= OftenUsedStrings.CITY_NAME.getOftenUsedString();
-    private final static String COUNTY= OftenUsedStrings.COUNTY.getOftenUsedString();
-    private final static String LOCATION=OftenUsedStrings.LOCATION.getOftenUsedString();
+    public final static String NO_SIGNAL = OftenUsedStrings.NO_SIGNAL.getOftenUsedString();
+    public final static String CITY_NAME = OftenUsedStrings.CITY_NAME.getOftenUsedString();
+    private final static String COUNTY = OftenUsedStrings.COUNTY.getOftenUsedString();
+    private final static String LOCATION = OftenUsedStrings.LOCATION.getOftenUsedString();
     private String latitude;
     private String longitude;
 
@@ -42,24 +41,18 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
             + OPENSAGEDATA_API + "&q=%s" + COMMA + "%s&pretty=5" + "&no_annotations=1&language=%s";
 
 
-
     SearchByGeoposition(SharedPreferences sharedPreferences) {
         editor = sharedPreferences.edit();
     }
 
 
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
 
-    }
 
     @Override
     protected String doInBackground(String... strings) {
 
-
-        latitude = GeoLocationFinder.getLatitude();
-        longitude = GeoLocationFinder.getLongitude();
+        latitude = getLatitude();
+        longitude = getLongitude();
 
 //        latitude = "60.338935";
 //        longitude = "102.296999";
@@ -68,25 +61,36 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
         return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST, latitude, longitude, language));
     }
 
+    protected String getLatitude() {
+        return GeoLocationFinder.getLatitude();
+    }
+
+    protected String getLongitude() {
+        return GeoLocationFinder.getLongitude();
+    }
+
     @Override
     public void onPostExecute(String result) {
 
+        String location = LOCATION;
         try {
             JSONArray results = new JSONObject(result).getJSONArray(RESULTS);
             placeInfo = results.getJSONObject(0);
 
             extractPlaceName(placeInfo.getJSONObject(COMPONENTS));
 
-            Dialog_menu.weHaveGeoPosition = true;
-            Dialog_menu.getCity.setText(placeName);
+            weHaveGeoPosition = true;
             saveCityAndCoords(placeName, latitude, longitude);
             Dialog_menu.setLoaderVisibility();
+            location = placeName;
         } catch (JSONException e) {
-            prepareJsonException();
+            saveCityAndCoords(LOCATION, latitude, longitude);
+            Dialog_menu.setLoaderVisibility();
         } catch (NullPointerException nE) {
-            Dialog_menu.getCity.setText(NO_SIGNAL);
+            location = NO_SIGNAL;
         } finally {
-            Dialog_menu.weHaveGeoPosition = false;
+            Dialog_menu.getCity.setText(location);
+            weHaveGeoPosition = false;
         }
     }
 
@@ -97,18 +101,11 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
             placeName = components.getString(VILLAGE);
         } else if (components.has(HAMLET)) {
             placeName = components.getString(HAMLET);
-        } else if(components.has(COUNTY)) {
+        } else if (components.has(COUNTY)) {
             placeName = components.getString(COUNTY);
-        }else
-         {
+        } else {
             placeName = placeInfo.getString(FORMATTED).split(COMMA)[0];
         }
-    }
-
-    private void prepareJsonException() {
-        Dialog_menu.getCity.setText(LOCATION);
-            saveCityAndCoords(LOCATION, latitude, longitude);
-            Dialog_menu.setLoaderVisibility();
     }
 
     private void saveCityAndCoords(String city, String lat, String lon) {
@@ -116,6 +113,13 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
         editor.putString(LATITUDE, lat);
         editor.putString(LONGITUDE, lon);
         editor.apply();
+    }
+
+    void printHelloKitty(boolean except){
+        if (except) {
+            throw new NullPointerException("asdf");
+        }
+        System.out.println("Hello Kitty");
     }
 
 }

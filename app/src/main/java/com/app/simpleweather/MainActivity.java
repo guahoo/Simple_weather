@@ -42,6 +42,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import static com.app.simpleweather.Utility.SearchByGeoposition.CITY_NAME;
+import static com.app.simpleweather.Utility.WeatherIconMap.getResourceIdent;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -254,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
         //TODO сделать через форматер
         sunriseTxt.setText(new SimpleDateFormat("HH:mm ", Locale.ENGLISH).format(new Date(currentWeather.getSunrise() * 1000)));
         sunsetTxt.setText(new SimpleDateFormat("HH:mm ", Locale.ENGLISH).format(new Date(currentWeather.getSunset() * 1000)));
-        currentWeatherStatusView.setImageResource(weather_type_set_icon(currentWeather.getWeatherType()));
+        currentWeatherStatusView.setImageResource(getResourceIdent(currentWeather.getWeatherType()));
         updateTxt.setText(currentWeather.getUpdatedAtText());
         addressButton.setText(sharedPreferences.getString(CITY_NAME,null));
         setButtonTextSize();
@@ -397,10 +398,7 @@ public class MainActivity extends AppCompatActivity {
             weatherRenewService.stopWeatherRenewTask();
         }
         startService(new Intent(this, WeatherRenewService.class));
-
     }
-    public int weather_type_set_icon(String weather_model) {
-        return WeatherIconMap.weather_icons_map.get(WeatherIconMap.weather_icons_map.containsKey(weather_model) ? weather_model : null);
 
-    }
+
 }

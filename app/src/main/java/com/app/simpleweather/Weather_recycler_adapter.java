@@ -9,14 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.app.simpleweather.Utility.WeatherIconMap;
-
 import java.util.List;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.app.simpleweather.MainActivity.ISADAY;
+import static com.app.simpleweather.Utility.WeatherIconMap.getResourceIdent;
 
 public class Weather_recycler_adapter extends RecyclerView.Adapter<Weather_recycler_adapter.ViewHolder> {
 
@@ -65,8 +64,7 @@ public class Weather_recycler_adapter extends RecyclerView.Adapter<Weather_recyc
     }
 
     public void weather_type_set_icon(Weather_recycler_adapter.ViewHolder holder, String weather_model) {
-        holder.weather_type.setImageResource(
-                WeatherIconMap.weather_icons_map.get(WeatherIconMap.weather_icons_map.containsKey(weather_model) ? weather_model : ""));
+        holder.weather_type.setImageResource(getResourceIdent(weather_model));
 
     }
 

@@ -57,7 +57,7 @@ public class Dialog_menu {
     private SharedPreferences.Editor editor;
     private RelativeLayout dialogLayout;
     GeoLocationFinder geoFinder;
-    static boolean weHaveGeoPosition;
+    static volatile boolean weHaveGeoPosition;
     static ProgressBar loader;
 
 
@@ -243,30 +243,23 @@ public class Dialog_menu {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-            if (!s.equals("\\s*\\S+") & !weHaveGeoPosition) {
+            if (!weHaveGeoPosition && !s.equals("\\s*\\S+")) {
                 loader.setVisibility(View.VISIBLE);
-
-
                 bar.setVisibility(View.VISIBLE);
                 String pattern = getCity.getEditableText().toString();
                 SearchLocationNameTask searchLocationNameTask = new SearchLocationNameTask();
                 searchLocationNameTask.execute(pattern);
-
             }
-
         }
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count,
-                                      int after) {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             // TODO Auto-generated method stub
-
         }
 
         @Override
         public void afterTextChanged(Editable s) {
             // TODO Auto-generated method stub
-
         }
     };
 

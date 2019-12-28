@@ -3,8 +3,6 @@ package com.app.simpleweather.Utility;
 public enum OftenUsedStrings {
     OPENSAGEDATA_API("835b77b309444de689cd7c07b675493e"),
     RESULTS("results"),
-
-
     CITY("city"),
     VILLAGE("village"),
     HAMLET("hamlet"),

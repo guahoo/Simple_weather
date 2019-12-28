@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WeatherIconMap {
-    public static Map<String, Integer> weather_icons_map = new HashMap<>();
+    private static Map<String, Integer> weather_icons_map = new HashMap<>();
 
 
     private static final String OVERCAST_CLOUDS = "overcast clouds";
@@ -53,7 +53,7 @@ public class WeatherIconMap {
     public WeatherIconMap() {
     }
 
-    public static Integer getWeather_icons_map(String s) {
-        return weather_icons_map.get(s);
+    public static int getResourceIdent(String weatherModel) {
+        return weather_icons_map.get(weather_icons_map.containsKey(weatherModel) ? weatherModel : null);
     }
 }
