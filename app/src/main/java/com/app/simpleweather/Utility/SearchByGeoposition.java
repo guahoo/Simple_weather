@@ -17,7 +17,8 @@ import static com.app.simpleweather.Utility.Dialog_menu.weHaveGeoPosition;
 
 
 public class SearchByGeoposition extends AsyncTask<String, Void, String> {
-    OftenUsedStrings oftenUsedStrings;
+    private static final String STATE = "state";
+    private static final String TOWN = "town" ;
 
     private SharedPreferences.Editor editor;
     private final static String OPENSAGEDATA_API = OftenUsedStrings.OPENSAGEDATA_API.getOftenUsedString();
@@ -46,16 +47,14 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
     }
 
 
-
-
     @Override
     protected String doInBackground(String... strings) {
 
         latitude = getLatitude();
         longitude = getLongitude();
 
-//        latitude = "60.338935";
-//        longitude = "102.296999";
+//        latitude = "54.611007";
+//        longitude = "39.715388";
         String language = Locale.getDefault().getLanguage();
 
         return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST, latitude, longitude, language));
@@ -103,6 +102,11 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
             placeName = components.getString(HAMLET);
         } else if (components.has(COUNTY)) {
             placeName = components.getString(COUNTY);
+        } else if (components.has(TOWN)) {
+            placeName = components.getString(TOWN);
+        }
+            else if (components.has(STATE)) {
+            placeName = components.getString(STATE);
         } else {
             placeName = placeInfo.getString(FORMATTED).split(COMMA)[0];
         }
@@ -115,7 +119,7 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
         editor.apply();
     }
 
-    void printHelloKitty(boolean except){
+    void printHelloKitty(boolean except) {
         if (except) {
             throw new NullPointerException("asdf");
         }
