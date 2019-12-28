@@ -31,9 +31,25 @@ import java.util.regex.Pattern;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
+import static com.app.simpleweather.ForecastWeather.LIST;
+import static com.app.simpleweather.MainActivity.DESCRIPTION;
+import static com.app.simpleweather.MainActivity.LATITUDE;
+import static com.app.simpleweather.MainActivity.LONGITUDE;
+import static com.app.simpleweather.MainActivity.MAIN;
+import static com.app.simpleweather.MainActivity.TEMP;
+import static com.app.simpleweather.MainActivity.WEATHER;
+import static com.app.simpleweather.MainActivity.WIND;
+import static com.app.simpleweather.MainActivity.WINDSPEED;
+import static com.app.simpleweather.Utility.SearchByGeoposition.CITY_NAME;
+import static com.app.simpleweather.Utility.SearchByGeoposition.NO_SIGNAL;
+import static com.app.simpleweather.Utility.WeatherIconMap.RAIN;
+
 @SuppressWarnings("deprecation")
 public class WeatherRenewService extends Service {
     private static final int NOTIF_ID = 1;
+    private static final CharSequence CHANNEL_NAME = "weather_service";
+    private static final String WEATHER_RENEW_CHANNEL_DESCRIPRION = "Weather_channel_notification";
+    private static final String ALERT_SIGNALS = "rain|shower rain|light rain|snow|light snow";
 
     public String PREFERENSES;
     Context context;
@@ -41,7 +57,7 @@ public class WeatherRenewService extends Service {
     RemoteViews remoteViews;
     SharedPreferences sharedPreferences;
     String PREFERENCES;
-    String API = "b542736e613d2382837ad821803eb507";
+    String OPEN_WEATHER_MAP_API_KEY = "b542736e613d2382837ad821803eb507";
     NotificationManager notificationManager;
     NotificationCompat.Builder builder;
     SharedPreferences sPrefs;
@@ -135,8 +151,8 @@ public class WeatherRenewService extends Service {
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Eggz";
-            String description = "EggzNotificationChannel";
+            CharSequence name = CHANNEL_NAME;
+            String description = WEATHER_RENEW_CHANNEL_DESCRIPRION;
             int importance = NotificationManager.IMPORTANCE_LOW;
             NotificationChannel channel = new NotificationChannel(NOTIF_CHANNEL_ID, name, importance);
             channel.setDescription(description);
@@ -190,10 +206,10 @@ public class WeatherRenewService extends Service {
 
         @Override
         protected String doInBackground(String... args) {
-            String cityLat = sharedPreferences.getString("cityLat", "55");
-            String cityLon = sharedPreferences.getString("cityLon", "55");
+            String cityLat = sharedPreferences.getString(LATITUDE, null);
+            String cityLon = sharedPreferences.getString(LONGITUDE, null);
 
-            return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST,cityLat,cityLon,API));
+            return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST,cityLat,cityLon, OPEN_WEATHER_MAP_API_KEY));
         }
 
         @Override
@@ -206,13 +222,13 @@ public class WeatherRenewService extends Service {
             try {
                 assert result != null;
                 JSONObject jsonObj = new JSONObject(result);
-                JSONObject main = jsonObj.getJSONObject("main");
-                JSONObject weather = jsonObj.getJSONArray("weather").getJSONObject(0);
-                String temp = Convert.tempString(main.getString("temp"));
-                String location = sharedPreferences.getString("city_name", "MINSK");
+                JSONObject main = jsonObj.getJSONObject(MAIN);
+                JSONObject weather = jsonObj.getJSONArray(WEATHER).getJSONObject(0);
+                String temp = Convert.tempString(main.getString(TEMP));
+                String location = sharedPreferences.getString(CITY_NAME, null);
 
 
-                String weatherType = weather.getString("description");
+                String weatherType = weather.getString(DESCRIPTION);
 
 
 
@@ -234,7 +250,7 @@ public class WeatherRenewService extends Service {
 
 
             } catch (JSONException e) {
-                updateNotification("Нет сети","","");
+                soWeGotException();
 
 
 
@@ -247,11 +263,15 @@ public class WeatherRenewService extends Service {
         }
     }
 
+    private void soWeGotException() {
+        updateNotification(NO_SIGNAL,null,null);
+
+    }
+
     public class ForecastWeather extends AsyncTask<String, Void, String> {
         JSONArray jArr;
         SharedPreferences sharedPreferences;
         String PREFERENCES;
-        String API = "b542736e613d2382837ad821803eb507";
         Context context;
         String windSpeed;
 
@@ -262,7 +282,8 @@ public class WeatherRenewService extends Service {
             this.context = context;
         }
 
-        final static String URL_REQUEST_FORECAST = "https://api.openweathermap.org/data/2.5/forecast?lat=%s&lon=%s&units=metric&cnt=1&appid=%s";
+        final static String URL_REQUEST_FORECAST = "https://api.openweathermap.org/data/2.5/forecast?lat=%s&" +
+                "lon=%s&units=metric&cnt=1&appid=%s";
 
 
         @Override
@@ -273,41 +294,41 @@ public class WeatherRenewService extends Service {
 
         @Override
         protected String doInBackground(String... strings) {
-            String cityLat = sharedPreferences.getString("cityLat", "55");
-            String cityLon = sharedPreferences.getString("cityLon", "55");
+            String cityLat = sharedPreferences.getString(LATITUDE, null);
+            String cityLon = sharedPreferences.getString(LONGITUDE, null);
 
-            return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST, cityLat, cityLon, API));
+            return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST, cityLat, cityLon, OPEN_WEATHER_MAP_API_KEY));
         }
 
         @Override
         public void onPostExecute(String result) {
             if (result == null) {
-                updateNotification("Нет сети","","");
+                soWeGotException();
             }
 
             try {
                 assert result != null;
                 JSONObject jsonResult = new JSONObject(result);
-                jArr = jsonResult.getJSONArray("list");
+                jArr = jsonResult.getJSONArray(LIST);
 
 
             } catch (JSONException e) {
-                updateNotification("Нет сети","","");
+                soWeGotException();
 
             }
 
                 JSONObject jsonObject;
                 try {
                     jsonObject = jArr.getJSONObject(0);
-                    JSONObject wind = jsonObject.getJSONObject("wind");
-                    JSONObject weather = jsonObject.getJSONArray("weather").getJSONObject(0);
+                    JSONObject wind = jsonObject.getJSONObject(WIND);
+                    JSONObject weather = jsonObject.getJSONArray(WEATHER).getJSONObject(0);
 
 
-                    windSpeed = wind.getString("speed");
-                    weatherDescription = weather.getString("description");
+                    windSpeed = wind.getString(WINDSPEED);
+                    weatherDescription = weather.getString(DESCRIPTION);
 
 
-                    if (weatherDescription.matches("rain|shower rain|light rain|snow|light snow")){
+                    if (weatherDescription.matches(ALERT_SIGNALS)){
                         weatherDescription=weatherDescription+"_alert";}
 
                     assyncHandler.sendEmptyMessage(0);

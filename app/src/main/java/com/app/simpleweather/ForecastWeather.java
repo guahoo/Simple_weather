@@ -15,7 +15,7 @@ import static com.app.simpleweather.MainActivity.LATITUDE;
 import static com.app.simpleweather.MainActivity.LONGITUDE;
 
 public class ForecastWeather extends AsyncTask<String, Void, String> {
-    private static final String LIST = "list";
+    public static final String LIST = "list";
     private SharedPreferences sharedPreferences;
     private  String PREFERENCES;
     private Context context;
@@ -26,7 +26,8 @@ public class ForecastWeather extends AsyncTask<String, Void, String> {
     ForecastWeather(Context context) {
         this.context=context;
     }
-    private final static String URL_REQUEST_FORECAST= "https://api.openweathermap.org/data/2.5/forecast?lat=%s&lon=%s&units=metric&cnt=30&appid=%s";
+    private final static String URL_REQUEST_FORECAST= "https://api.openweathermap.org/data/2.5/forecast?" +
+            "lat=%s&lon=%s&units=metric&cnt=30&appid=%s";
 
 
 

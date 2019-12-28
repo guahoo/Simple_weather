@@ -105,7 +105,7 @@ public class WeatherBar {
     }
 
     public void createNotificationChannel(String s, String weathertype, String location) {
-        // Create the NotificationChannel, but only on API 26+ because
+        // Create the NotificationChannel, but only on OPEN_WEATHER_MAP_API_KEY 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Eggz";

@@ -14,20 +14,25 @@ import static com.app.simpleweather.MainActivity.LONGITUDE;
 
 
 public class SearchByGeoposition extends AsyncTask<String, Void, String> {
+    OftenUsedStrings oftenUsedStrings;
+
+
+
+
 
     private SharedPreferences.Editor editor;
-    private final static String OPENSAGEDATA_API = "835b77b309444de689cd7c07b675493e";
-    private final static String RESULTS = "results";
-    private final static String CITY = "city";
-    private final static String VILLAGE = "village";
-    private final static String HAMLET = "hamlet";
-    private final static String FORMATTED = "formatted";
-    private final static String COMPONENTS = "components";
-    public final static String COMMA = ",";
-    private final static String LOCATION= "Ваше местоположение";
-    private final static String NO_SIGNAL= "Нет сети";
-    public final static String CITY_NAME= "city_name";
-    private final static String COUNTY= "county";
+    private final static String OPENSAGEDATA_API = OftenUsedStrings.OPENSAGEDATA_API.getOftenUsedString();
+    private final static String RESULTS = OftenUsedStrings.RESULTS.getOftenUsedString();
+    private final static String CITY = OftenUsedStrings.CITY.getOftenUsedString();
+    private final static String VILLAGE = OftenUsedStrings.VILLAGE.getOftenUsedString();
+    private final static String HAMLET = OftenUsedStrings.HAMLET.getOftenUsedString();
+    private final static String FORMATTED = OftenUsedStrings.FORMATTED.getOftenUsedString();
+    private final static String COMPONENTS = OftenUsedStrings.COMPONENTS.getOftenUsedString();
+    public final static String COMMA = OftenUsedStrings.COMMA.getOftenUsedString();
+    public final static String NO_SIGNAL= OftenUsedStrings.NO_SIGNAL.getOftenUsedString();
+    public final static String CITY_NAME= OftenUsedStrings.CITY_NAME.getOftenUsedString();
+    private final static String COUNTY= OftenUsedStrings.COUNTY.getOftenUsedString();
+    private final static String LOCATION=OftenUsedStrings.LOCATION.getOftenUsedString();
     private String latitude;
     private String longitude;
 
