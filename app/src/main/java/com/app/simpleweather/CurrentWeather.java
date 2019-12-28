@@ -14,9 +14,31 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static com.app.simpleweather.MainActivity.COUNTRY_NAME;
+import static com.app.simpleweather.MainActivity.DEG;
+import static com.app.simpleweather.MainActivity.DESCRIPTION;
+import static com.app.simpleweather.MainActivity.DT;
+import static com.app.simpleweather.MainActivity.JSONOBJECT;
+import static com.app.simpleweather.MainActivity.LATITUDE;
+import static com.app.simpleweather.MainActivity.LOCATION_NAME;
+import static com.app.simpleweather.MainActivity.LONGITUDE;
+import static com.app.simpleweather.MainActivity.MAIN;
+import static com.app.simpleweather.MainActivity.SUNRISE;
+import static com.app.simpleweather.MainActivity.SUNSET;
+import static com.app.simpleweather.MainActivity.SYS;
+import static com.app.simpleweather.MainActivity.TEMP;
+import static com.app.simpleweather.MainActivity.TEMP_MAX;
+import static com.app.simpleweather.MainActivity.TEMP_MIN;
+import static com.app.simpleweather.MainActivity.WEATHER;
+import static com.app.simpleweather.MainActivity.WINDSPEED;
+import static com.app.simpleweather.MainActivity.WIND;
+import static com.app.simpleweather.Utility.SearchByGeoposition.COMMA;
+
 public class CurrentWeather extends AsyncTask<String, Void, String> {
+
+
     Context context;
-    String API="b542736e613d2382837ad821803eb507";
+    public static final String OPENWEATHERMAP_API_KEY ="b542736e613d2382837ad821803eb507";
     SharedPreferences sharedPreferences;
     String PREFERENCES;
     String jsonString;
@@ -59,12 +81,18 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
     String windDirection;
     String windSpeed;
 
+
+
     public String getTemp() {
         return temp;
     }
 
     String temp;
     long sunrise,sunset,updatedAt;
+    private final static String URL_REQUEST_FORECAST=
+            "https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&units=metric&appid=%s";
+
+
 
 
 
@@ -76,50 +104,52 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
     protected void onPreExecute() {
         super.onPreExecute();
         sharedPreferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
-        String cityLat=sharedPreferences.getString("cityLat", "55");
     }
 
     @Override
     protected String doInBackground(String... args) {
+        String latitude=sharedPreferences.getString(LATITUDE, null);
+        String longitude=sharedPreferences.getString(LONGITUDE, null);
 
-        String response = HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/weather?" +"lat="+
-                sharedPreferences.getString("cityLat", "55") +"&"+"lon="+ sharedPreferences.getString("cityLon", "55")+"&units=metric&appid=" + API);
-        return response;
+        return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST,latitude,longitude, OPENWEATHERMAP_API_KEY));
     }
 
     @Override
     public void onPostExecute(String result) {
 
         if (result == null) {
-            result = "allbegood";
+            ((MainActivity)context).soWeGotException();
+
         }
 
 
         try {
-             JSONObject jsonObj = new JSONObject(result);
-            JSONObject main = jsonObj.getJSONObject("main");
-            JSONObject sys = jsonObj.getJSONObject("sys");
-            JSONObject wind = jsonObj.getJSONObject("wind");
+            JSONObject jsonObj = new JSONObject(result);
+            JSONObject main = jsonObj.getJSONObject(MAIN);
+            JSONObject sys = jsonObj.getJSONObject(SYS);
+            JSONObject wind = jsonObj.getJSONObject(WIND);
 
 
 
-            setWindDirection(Integer.parseInt(wind.getString("deg")));
-            int windSpeedConverting=(int)Double.parseDouble(wind.getString("speed"));
+            setWindDirection(Integer.parseInt(wind.getString(DEG)));
+            int windSpeedConverting=(int)Double.parseDouble(wind.getString(WINDSPEED));
             windSpeed =(windSpeedConverting)+" ";
 
 
 
-            JSONObject weather = jsonObj.getJSONArray("weather").getJSONObject(0);
+            JSONObject weather = jsonObj.getJSONArray(WEATHER).getJSONObject(0);
 
 
-            weatherType = weather.getString("description");
-            location = jsonObj.getString("name") + ", " + sys.getString("country");
-            sunrise = sys.getLong("sunrise");
-            sunset = sys.getLong("sunset");
-            updatedAt = jsonObj.getLong("dt");
-            temp = Convert.tempString(main.getString("temp"));
-            tempMin = "Min Temp: " + Convert.tempString(main.getString("temp_min"));
-            tempMax = "Max Temp: " + Convert.tempString(main.getString("temp_max"));
+            weatherType = weather.getString(DESCRIPTION);
+            location = jsonObj.getString(LOCATION_NAME) + COMMA + sys.getString(COUNTRY_NAME);
+            sunrise = sys.getLong(SUNRISE);
+            sunset = sys.getLong(SUNSET);
+            updatedAt = jsonObj.getLong(DT);
+            temp = Convert.tempString(main.getString(TEMP));
+
+
+
+            //TODO formatted
 
             updatedAtText = new SimpleDateFormat("HH:mm", Locale.ENGLISH)
                     .format(new Date(updatedAt * 1000));
@@ -127,8 +157,8 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
 
             jsonString = jsonObj.toString();
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("jsonObj", jsonString);
-            editor.putString("temp", temp);
+            editor.putString(JSONOBJECT, jsonString);
+            editor.putString(TEMP, temp);
             editor.apply();
 
 

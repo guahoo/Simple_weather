@@ -23,12 +23,12 @@ import com.app.simpleweather.Utility.WeatherBar;
 import com.app.simpleweather.Utility.WeatherIconMap;
 import com.app.simpleweather.Utility.WeatherRenewService;
 
-import org.apache.commons.codec.binary.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +47,32 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static final String ISADAY = "day";
+    protected static final String JSONARRAY = "jsonArray";
+    public static final String MAIN = "main";
+    public static final String DT = "dt";
+    public static final String WIND = "wind";
+    public static final String WEATHER = "weather" ;
+    public static final String TEMP = "temp";
+    public static final String PRESSURE = "pressure" ;
+    public static final String HUDIMITY = "humidity";
+    public static final String WINDSPEED = "speed";
+    public static final String DEG = "deg";
+    public static final String DESCRIPTION = "description";
+    private static final String CHANNEL_ID = "1" ;
+    private static final String CHANNEL_NAME = "Weather channel";
+
+    public static final String LATITUDE = "cityLat";
+    public static final String LONGITUDE = "cityLon";
+    public static final String SYS = "sys";
+    public static final String LOCATION_NAME = "name";
+    public static final String COUNTRY_NAME = "country";
+
+    static final String SUNRISE = "sunrise";
+    static final String SUNSET = "sunset";
+    static final String TEMP_MIN = "temp_min";
+    static final String TEMP_MAX = "temp_max";
+    static final String JSONOBJECT = "jsonObj";
+
     List<Weather_model> weather_forecast = new ArrayList<>();
     Button addressButton;
     String PREFERENCES;
@@ -146,6 +172,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+
         if (sharedPreferences.getAll().isEmpty()) {
             dialog_menu.showMenuDialog();
         }else {
@@ -154,10 +182,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setForecastDate(int i) throws JSONException {
-        String jsonString = sharedPreferences.getString("jsonArray", null);
+        String jsonString = sharedPreferences.getString(JSONARRAY, null);
         jsonArray = new JSONArray(jsonString);
         JSONObject jsonObject = jsonArray.getJSONObject(i);
-        long updatedAt = jsonObject.getLong("dt");
+        long updatedAt = jsonObject.getLong(DT);
+        //TODO formatter
 
         String updatedAtText_date = new SimpleDateFormat("dd.MM EEEE",Locale.getDefault())
                 .format(new Date(updatedAt * 1000)).toUpperCase();
@@ -176,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setForecastInitialData() throws JSONException {
-        jsonString = sharedPreferences.getString("jsonArray", null);
+        jsonString = sharedPreferences.getString(JSONARRAY, null);
         jArr = new JSONArray(jsonString);
         firstVisibleInListview = layoutManager.findFirstVisibleItemPosition();
         adapter = new Weather_recycler_adapter(this, weather_forecast);
@@ -188,25 +217,28 @@ public class MainActivity extends AppCompatActivity {
             try {
                 jsonObject = jArr.getJSONObject(i);
 
-                JSONObject main = jsonObject.getJSONObject("main");
-                long updatedAt = jsonObject.getLong("dt");
-                JSONObject wind = jsonObject.getJSONObject("wind");
-                JSONObject weather = jsonObject.getJSONArray("weather").getJSONObject(0);
+                JSONObject main = jsonObject.getJSONObject(MAIN);
+                long updatedAt = jsonObject.getLong(DT);
+                JSONObject wind = jsonObject.getJSONObject(WIND);
+                JSONObject weather = jsonObject.getJSONArray(WEATHER).getJSONObject(0);
 
 
-                String temp = Convert.tempString(main.getString("temp"));
+                String temp = Convert.tempString(main.getString(TEMP));
+                //TODO formatter
+
                 String updatedAtText_hour = new SimpleDateFormat("HH", Locale.ENGLISH)
                         .format(new Date(updatedAt * 1000));
 
-                String pressure = main.getString("pressure");
-                String humidity = main.getString("humidity");
-                int windSpeedConverting=(int)Double.parseDouble(wind.getString("speed"));
+                String pressure = main.getString(PRESSURE);
+                String humidity = main.getString(HUDIMITY);
+                int windSpeedConverting=(int)Double.parseDouble(wind.getString(WINDSPEED));
                 String windSpeed =String.valueOf(windSpeedConverting)+" ";
-                int windDirection =Integer.parseInt(wind.getString("deg"));
-                String weatherDescription = weather.getString("description");
+                int windDirection =Integer.parseInt(wind.getString(DEG));
+                String weatherDescription = weather.getString(DESCRIPTION);
 
 
-                weather_forecast.add(new Weather_model(updatedAtText_hour, weatherDescription, temp, pressure, humidity, windSpeed,windDirection));
+                weather_forecast.add(new Weather_model(updatedAtText_hour, weatherDescription,
+                        temp, pressure, humidity, windSpeed,windDirection));
 
             } catch (JSONException e) {
                 findViewById(R.id.loader).setVisibility(View.GONE);
@@ -224,20 +256,13 @@ public class MainActivity extends AppCompatActivity {
         sunsetTxt.setText(new SimpleDateFormat("HH:mm ", Locale.ENGLISH).format(new Date(currentWeather.getSunset() * 1000)));
         currentWeatherStatusView.setImageResource(weather_type_set_icon(currentWeather.getWeatherType()));
         updateTxt.setText(currentWeather.getUpdatedAtText());
-      //  CITYNAME=sharedPreferences.getString("city_name","BABRYISK");
-        addressButton.setText(sharedPreferences.getString(CITY_NAME,"BABRYISK"));
+        addressButton.setText(sharedPreferences.getString(CITY_NAME,null));
         setButtonTextSize();
-
-
-        //addressButton.setTextSize();
         windTextView.setText(currentWeather.windSpeed + currentWeather.windDirection);
-
         loader.setVisibility(View.GONE);
         mainContainer.setVisibility(View.VISIBLE);
         addressButton.setVisibility(View.VISIBLE);
         errorText.setVisibility(View.INVISIBLE);
-
-
     }
 
     private void setButtonTextSize() {
@@ -345,10 +370,10 @@ public class MainActivity extends AppCompatActivity {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationChannel channel = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channel = new NotificationChannel("1", NOTIF_CHANNEL_ID, NotificationManager.IMPORTANCE_DEFAULT);
+            channel = new NotificationChannel(CHANNEL_ID, NOTIF_CHANNEL_ID, NotificationManager.IMPORTANCE_DEFAULT);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channel.setDescription("Weather channel");
+            channel.setDescription(CHANNEL_NAME);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             assert notificationManager != null;
@@ -375,7 +400,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public int weather_type_set_icon(String weather_model) {
-        return WeatherIconMap.weather_icons_map.get(WeatherIconMap.weather_icons_map.containsKey(weather_model) ? weather_model : "");
+        return WeatherIconMap.weather_icons_map.get(WeatherIconMap.weather_icons_map.containsKey(weather_model) ? weather_model : null);
 
     }
 }

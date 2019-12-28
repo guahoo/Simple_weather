@@ -9,8 +9,13 @@ import com.androdocs.httprequest.HttpRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import static com.app.simpleweather.CurrentWeather.OPENWEATHERMAP_API_KEY;
+import static com.app.simpleweather.MainActivity.JSONARRAY;
+import static com.app.simpleweather.MainActivity.LATITUDE;
+import static com.app.simpleweather.MainActivity.LONGITUDE;
 
 public class ForecastWeather extends AsyncTask<String, Void, String> {
+    private static final String LIST = "list";
     private SharedPreferences sharedPreferences;
     private  String PREFERENCES;
     private Context context;
@@ -33,11 +38,9 @@ public class ForecastWeather extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... strings) {
-        String cityLat=sharedPreferences.getString("cityLat", null);
-        String cityLon=sharedPreferences.getString("cityLon", null);
-
-        String API = "b542736e613d2382837ad821803eb507";
-        return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST,cityLat,cityLon, API));
+        String cityLat=sharedPreferences.getString(LATITUDE, null);
+        String cityLon=sharedPreferences.getString(LONGITUDE, null);
+        return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST,cityLat,cityLon, OPENWEATHERMAP_API_KEY));
     }
 
     @Override
@@ -49,10 +52,10 @@ public class ForecastWeather extends AsyncTask<String, Void, String> {
         try {
             assert result != null;
             JSONObject jsonResult = new JSONObject(result);
-            JSONArray jArr = jsonResult.getJSONArray("list");
+            JSONArray jArr = jsonResult.getJSONArray(LIST);
             jsonString = jArr.toString();
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("jsonArray", jsonString);
+            editor.putString(JSONARRAY, jsonString);
             editor.apply();
 
             ((MainActivity)context).setForecastInitialData();

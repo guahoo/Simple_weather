@@ -1,36 +1,31 @@
 package com.app.simpleweather.Utility;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import com.androdocs.httprequest.HttpRequest;
-import com.app.simpleweather.NominativeConnect;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.Locale;
+import static com.app.simpleweather.MainActivity.LATITUDE;
+import static com.app.simpleweather.MainActivity.LONGITUDE;
 
 
 public class SearchByGeoposition extends AsyncTask<String, Void, String> {
 
     private SharedPreferences.Editor editor;
-    private final static String API = "835b77b309444de689cd7c07b675493e";
-    private final static String URL_REQUEST_FORECAST = "https://api.opencagedata.com/geocode/v1/json?key="
-            + API + "&q=%s" + "," + "%s&pretty=5" + "&no_annotations=1&language=%s&min_confidence=4";
+    private final static String OPENSAGEDATA_API = "835b77b309444de689cd7c07b675493e";
     private final static String RESULTS = "results";
     private final static String CITY = "city";
     private final static String VILLAGE = "village";
     private final static String HAMLET = "hamlet";
     private final static String FORMATTED = "formatted";
     private final static String COMPONENTS = "components";
-    private final static String COMMA = ",";
+    public final static String COMMA = ",";
     private final static String LOCATION= "Ваше местоположение";
     private final static String NO_SIGNAL= "Нет сети";
-    private final static String CITY_LAT= "cityLat";
-    private final static String CITY_lON= "cityLon";
     public final static String CITY_NAME= "city_name";
     private final static String COUNTY= "county";
     private String latitude;
@@ -38,6 +33,8 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
 
     private JSONObject placeInfo;
     private String placeName;
+    private final static String URL_REQUEST_FORECAST = "https://api.opencagedata.com/geocode/v1/json?key="
+            + OPENSAGEDATA_API + "&q=%s" + COMMA + "%s&pretty=5" + "&no_annotations=1&language=%s";
 
 
 
@@ -111,8 +108,8 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
 
     private void saveCityAndCoords(String city, String lat, String lon) {
         editor.putString(CITY_NAME, city);
-        editor.putString(CITY_LAT, lat);
-        editor.putString(CITY_lON, lon);
+        editor.putString(LATITUDE, lat);
+        editor.putString(LONGITUDE, lon);
         editor.apply();
     }
 

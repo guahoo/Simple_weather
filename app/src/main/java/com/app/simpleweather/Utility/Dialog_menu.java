@@ -33,9 +33,21 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
+import static com.app.simpleweather.MainActivity.ISADAY;
+import static com.app.simpleweather.MainActivity.LATITUDE;
+import static com.app.simpleweather.MainActivity.LONGITUDE;
+import static com.app.simpleweather.Utility.SearchByGeoposition.CITY_NAME;
+import static com.app.simpleweather.Utility.SearchByGeoposition.COMMA;
+
 
 public class Dialog_menu {
 
+    private static final String CITY_NAME_DISPLAY_LIST = "name";
+    private static final String DISPLAYED_NAME = "display_name";
+    private static final String LON = "lon";
+    private static final String LAT = "lat";
+    private static final String NO_CONNECTION = "No connection";
+    private static final String NOT_FOUND = "Not found";
     private SharedPreferences sharedPreferences;
     private Context context;
     private ImageButton ok_button, getLocationButton;
@@ -85,7 +97,7 @@ public class Dialog_menu {
 
         nominativeConnect = new NominativeConnect();
 
-        if (sharedPreferences.getBoolean("day", false)) {
+        if (sharedPreferences.getBoolean(ISADAY, false)) {
             dialogLayout.setBackgroundResource(R.drawable.bg_gradient_day);
         }
 
@@ -125,7 +137,7 @@ public class Dialog_menu {
     public class SearchLocationNameTask extends AsyncTask<String, Void, String> {
         String getCityName = getCity.getText().toString();
         String locale = Locale.getDefault().getLanguage();
-                ;
+
         final static String URL_REQUEST_FORECAST=
                 "https://nominatim.openstreetmap.org/search?city=%s&format=json&place=city&accept-language=%s";
 
@@ -163,9 +175,10 @@ public class Dialog_menu {
                     HashMap<String, String> getCityLon = new HashMap<>();
                     HashMap<String, String> getCityLat = new HashMap<>();
 
-                    getCityName.put("name", placeInfo.getString("display_name"));
-                    getCityLon.put("lon", placeInfo.getString("lon"));
-                    getCityLat.put("lat", placeInfo.getString("lat"));
+                    getCityName.put(CITY_NAME_DISPLAY_LIST, placeInfo.getString(DISPLAYED_NAME));
+                    getCityLat.put(LAT, placeInfo.getString(LAT));
+                    getCityLon.put(LON, placeInfo.getString(LON));
+
 
                     cityNames.add(getCityName);
                     cityLon.add(getCityLon);
@@ -174,7 +187,7 @@ public class Dialog_menu {
 
                 }
 
-                adapter = new SimpleAdapter(context, cityNames, R.layout.listview_item, new String[]{"name"}, new int[]{R.id.colName});
+                adapter = new SimpleAdapter(context, cityNames, R.layout.listview_item, new String[]{CITY_NAME_DISPLAY_LIST}, new int[]{R.id.colName});
 
                 bar.setAdapter(adapter);
                 bar.setVisibility(View.VISIBLE);
@@ -185,15 +198,15 @@ public class Dialog_menu {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         getCity.removeTextChangedListener(textWatcher);
 
-                        String str = cityNames.get(position).get("name");
+                        String str = cityNames.get(position).get(CITY_NAME_DISPLAY_LIST);
                         try {
-                            String kept = str.substring(0, str.indexOf(","));
+                            String kept = str.substring(0, str.indexOf(COMMA));
 
                             getCity.setText(kept);
-                            saveCityAndCoords(kept, cityLat.get(position).get("lat"), cityLon.get(position).get("lon"));
+                            saveCityAndCoords(kept, cityLat.get(position).get(LAT), cityLon.get(position).get(LON));
                         } catch (StringIndexOutOfBoundsException sE) {
                             getCity.setText(str);
-                            saveCityAndCoords(str, cityLat.get(position).get("lat"), cityLon.get(position).get("lon"));
+                            saveCityAndCoords(str, cityLat.get(position).get(LAT), cityLon.get(position).get(LON));
                         }
 
 
@@ -205,10 +218,10 @@ public class Dialog_menu {
 
 
             } catch (JSONException e) {
-                getCity.setText("Город не найден");
+                getCity.setText(NOT_FOUND);
             } catch (NullPointerException nE){
 
-               getCity.setText("Нет сети");
+               getCity.setText(NO_CONNECTION);
 
             }
 
@@ -218,9 +231,10 @@ public class Dialog_menu {
     }
 
     protected void saveCityAndCoords(String city, String lat, String lon) {
-        editor.putString("city_name", city);
-        editor.putString("cityLon", lon);
-        editor.putString("cityLat", lat);
+        editor.putString(CITY_NAME, city);
+        editor.putString(LATITUDE, lat);
+        editor.putString(LONGITUDE, lon);
+
         editor.apply();
     }
 
@@ -237,9 +251,6 @@ public class Dialog_menu {
                 String pattern = getCity.getEditableText().toString();
                 SearchLocationNameTask searchLocationNameTask = new SearchLocationNameTask();
                 searchLocationNameTask.execute(pattern);
-//                ok_button.setVisibility(View.INVISIBLE);
-
-            } else {
 
             }
 

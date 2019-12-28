@@ -20,49 +20,31 @@ public class Weather_model {
         return date_time;
     }
 
-    public void setDate_time(String date_time) {
-        this.date_time = date_time;
-    }
 
     String getWeather_type() {
         return weather_type;
     }
 
-    public void setWeather_type(String weather_type) {
-        this.weather_type = weather_type;
-    }
 
     String getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(String temperature) {
-        this.temperature = temperature;
-    }
 
     String getPressure() {
         return pressure;
     }
 
-    public void setPressure(String pressure) {
-        this.pressure = pressure;
-    }
 
     String getHudimity() {
         return humidity;
     }
 
-    public void setHudimity(String hudimity) {
-        this.humidity = hudimity;
-    }
 
     String getWind() {
         return wind;
     }
 
-    public void setWind(String wind) {
-        this.wind = wind;
-    }
 
     private String setWindDirection(int wind) {
         if (wind < 10 && wind >= 0) {

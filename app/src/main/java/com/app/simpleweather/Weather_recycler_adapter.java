@@ -51,9 +51,7 @@ public class Weather_recycler_adapter extends RecyclerView.Adapter<Weather_recyc
     public void onBindViewHolder(Weather_recycler_adapter.ViewHolder holder, int position) {
         Weather_model weather_model = weather.get(position);
         holder.date_time.setText(weather_model.getDate_time());
-
         weather_type_set_icon(holder, weather_model.getWeather_type());
-
         holder.temperature.setText(weather_model.getTemperature());
         holder.pressure.setText(weather_model.getPressure());
         holder.humidity.setText(weather_model.getHudimity());
