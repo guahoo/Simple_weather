@@ -7,39 +7,40 @@ import android.os.AsyncTask;
 import com.androdocs.httprequest.HttpRequest;
 import com.app.simpleweather.Utility.Convert;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.app.simpleweather.MainActivity.COUNTRY_NAME;
-import static com.app.simpleweather.MainActivity.DEG;
-import static com.app.simpleweather.MainActivity.DESCRIPTION;
-import static com.app.simpleweather.MainActivity.DT;
-import static com.app.simpleweather.MainActivity.JSONOBJECT;
-import static com.app.simpleweather.MainActivity.LATITUDE;
-import static com.app.simpleweather.MainActivity.LOCATION_NAME;
-import static com.app.simpleweather.MainActivity.LONGITUDE;
-import static com.app.simpleweather.MainActivity.MAIN;
-import static com.app.simpleweather.MainActivity.SUNRISE;
-import static com.app.simpleweather.MainActivity.SUNSET;
-import static com.app.simpleweather.MainActivity.SYS;
-import static com.app.simpleweather.MainActivity.TEMP;
-import static com.app.simpleweather.MainActivity.TEMP_MAX;
-import static com.app.simpleweather.MainActivity.TEMP_MIN;
-import static com.app.simpleweather.MainActivity.WEATHER;
-import static com.app.simpleweather.MainActivity.WINDSPEED;
-import static com.app.simpleweather.MainActivity.WIND;
-import static com.app.simpleweather.Utility.SearchByGeoposition.COMMA;
+import static com.app.simpleweather.Utility.OftenUsedStrings.COMMA;
+import static com.app.simpleweather.Utility.OftenUsedStrings.COUNTRY_NAME;
+import static com.app.simpleweather.Utility.OftenUsedStrings.DEG;
+import static com.app.simpleweather.Utility.OftenUsedStrings.DESCRIPTION;
+import static com.app.simpleweather.Utility.OftenUsedStrings.DT;
+import static com.app.simpleweather.Utility.OftenUsedStrings.ISADAY;
+import static com.app.simpleweather.Utility.OftenUsedStrings.JSONOBJECT;
+import static com.app.simpleweather.Utility.OftenUsedStrings.LATITUDE;
+import static com.app.simpleweather.Utility.OftenUsedStrings.LOCATION_NAME;
+import static com.app.simpleweather.Utility.OftenUsedStrings.LONGITUDE;
+import static com.app.simpleweather.Utility.OftenUsedStrings.MAIN;
+import static com.app.simpleweather.Utility.OftenUsedStrings.SUNRISE;
+import static com.app.simpleweather.Utility.OftenUsedStrings.SUNSET;
+import static com.app.simpleweather.Utility.OftenUsedStrings.SYS;
+import static com.app.simpleweather.Utility.OftenUsedStrings.TEMP;
+import static com.app.simpleweather.Utility.OftenUsedStrings.URL_REQUEST_OPEN_WEATHER_MAP_CURRENT_WEATHER;
+import static com.app.simpleweather.Utility.OftenUsedStrings.WEATHER;
+import static com.app.simpleweather.Utility.OftenUsedStrings.WIND;
+import static com.app.simpleweather.Utility.OftenUsedStrings.WINDSPEED;
+
 
 public class CurrentWeather extends AsyncTask<String, Void, String> {
 
 
     Context context;
-    public static final String OPENWEATHERMAP_API_KEY ="b542736e613d2382837ad821803eb507";
+    public static final String OPENWEATHERMAP_API_KEY = "b542736e613d2382837ad821803eb507";
     SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     String PREFERENCES;
     String jsonString;
 
@@ -82,22 +83,16 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
     String windSpeed;
 
 
-
     public String getTemp() {
         return temp;
     }
 
     String temp;
-    long sunrise,sunset,updatedAt;
-    private final static String URL_REQUEST_FORECAST=
-            "https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&units=metric&appid=%s";
-
-
-
+    long sunrise, sunset, updatedAt;
 
 
     public CurrentWeather(Context context) {
-        this.context=context;
+        this.context = context;
     }
 
     @Override
@@ -108,17 +103,17 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... args) {
-        String latitude=sharedPreferences.getString(LATITUDE, null);
-        String longitude=sharedPreferences.getString(LONGITUDE, null);
+        String latitude = sharedPreferences.getString(LATITUDE, null);
+        String longitude = sharedPreferences.getString(LONGITUDE, null);
 
-        return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST,latitude,longitude, OPENWEATHERMAP_API_KEY));
+        return HttpRequest.excuteGet(String.format(URL_REQUEST_OPEN_WEATHER_MAP_CURRENT_WEATHER, latitude, longitude, OPENWEATHERMAP_API_KEY));
     }
 
     @Override
     public void onPostExecute(String result) {
 
         if (result == null) {
-            ((MainActivity)context).soWeGotException();
+            ((MainActivity) context).soWeGotException();
 
         }
 
@@ -130,11 +125,9 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
             JSONObject wind = jsonObj.getJSONObject(WIND);
 
 
-
             setWindDirection(Integer.parseInt(wind.getString(DEG)));
-            int windSpeedConverting=(int)Double.parseDouble(wind.getString(WINDSPEED));
-            windSpeed =(windSpeedConverting)+" ";
-
+            int windSpeedConverting = (int) Double.parseDouble(wind.getString(WINDSPEED));
+            windSpeed = (windSpeedConverting) + " ";
 
 
             JSONObject weather = jsonObj.getJSONArray(WEATHER).getJSONObject(0);
@@ -146,7 +139,6 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
             sunset = sys.getLong(SUNSET);
             updatedAt = jsonObj.getLong(DT);
             temp = Convert.tempString(main.getString(TEMP));
-
 
 
             //TODO formatted
@@ -162,26 +154,25 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
             editor.apply();
 
 
+            ((MainActivity) context).setCurrentWeatherData();
+            ((MainActivity) context).set_day_night_background(updatedAt, sunrise, sunset);
+            ((MainActivity) context).initChannels(context);
+            ((MainActivity) context).startNotifyIntent();
 
 
+        } catch (Exception e) {
+            ((MainActivity) context).soWeGotException();
+            editor = sharedPreferences.edit();
+            editor.putBoolean(ISADAY, false);
+            editor.apply();
 
-
-
-            ((MainActivity)context).setCurrentWeatherData();
-            ((MainActivity)context).set_day_night_background(updatedAt, sunrise, sunset);
-            ((MainActivity)context).initChannels(context);
-            ((MainActivity)context).startNotifyIntent();
-
-
-        } catch (JSONException e) {
-            ( (MainActivity)context).soWeGotException();
 
         }
 
     }
 
 
-   private void setWindDirection(int wind) {
+    private void setWindDirection(int wind) {
         if (wind < 10 && wind >= 0) {
             windDirection = "N";
         } else if (wind <= 359 && wind > 350) {

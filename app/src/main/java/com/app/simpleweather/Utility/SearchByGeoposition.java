@@ -11,35 +11,36 @@ import org.json.JSONObject;
 
 import java.util.Locale;
 
-import static com.app.simpleweather.MainActivity.LATITUDE;
-import static com.app.simpleweather.MainActivity.LONGITUDE;
+
 import static com.app.simpleweather.Utility.Dialog_menu.weHaveGeoPosition;
+import static com.app.simpleweather.Utility.OftenUsedStrings.CITY;
+import static com.app.simpleweather.Utility.OftenUsedStrings.CITY_NAME;
+import static com.app.simpleweather.Utility.OftenUsedStrings.COMMA;
+import static com.app.simpleweather.Utility.OftenUsedStrings.COMPONENTS;
+import static com.app.simpleweather.Utility.OftenUsedStrings.COUNTY;
+import static com.app.simpleweather.Utility.OftenUsedStrings.FORMATTED;
+import static com.app.simpleweather.Utility.OftenUsedStrings.HAMLET;
+import static com.app.simpleweather.Utility.OftenUsedStrings.LATITUDE;
+import static com.app.simpleweather.Utility.OftenUsedStrings.LOCATION;
+import static com.app.simpleweather.Utility.OftenUsedStrings.LONGITUDE;
+import static com.app.simpleweather.Utility.OftenUsedStrings.NO_SIGNAL;
+import static com.app.simpleweather.Utility.OftenUsedStrings.OPENSAGEDATA_API;
+import static com.app.simpleweather.Utility.OftenUsedStrings.RESULTS;
+import static com.app.simpleweather.Utility.OftenUsedStrings.STATE;
+import static com.app.simpleweather.Utility.OftenUsedStrings.TOWN;
+import static com.app.simpleweather.Utility.OftenUsedStrings.URL_REQUEST_OPENSAGE_GEOPOSITION;
+import static com.app.simpleweather.Utility.OftenUsedStrings.VILLAGE;
 
 
 public class SearchByGeoposition extends AsyncTask<String, Void, String> {
-    private static final String STATE = "state";
-    private static final String TOWN = "town" ;
 
     private SharedPreferences.Editor editor;
-    private final static String OPENSAGEDATA_API = OftenUsedStrings.OPENSAGEDATA_API.getOftenUsedString();
-    private final static String RESULTS = OftenUsedStrings.RESULTS.getOftenUsedString();
-    private final static String CITY = OftenUsedStrings.CITY.getOftenUsedString();
-    private final static String VILLAGE = OftenUsedStrings.VILLAGE.getOftenUsedString();
-    private final static String HAMLET = OftenUsedStrings.HAMLET.getOftenUsedString();
-    private final static String FORMATTED = OftenUsedStrings.FORMATTED.getOftenUsedString();
-    private final static String COMPONENTS = OftenUsedStrings.COMPONENTS.getOftenUsedString();
-    public final static String COMMA = OftenUsedStrings.COMMA.getOftenUsedString();
-    public final static String NO_SIGNAL = OftenUsedStrings.NO_SIGNAL.getOftenUsedString();
-    public final static String CITY_NAME = OftenUsedStrings.CITY_NAME.getOftenUsedString();
-    private final static String COUNTY = OftenUsedStrings.COUNTY.getOftenUsedString();
-    private final static String LOCATION = OftenUsedStrings.LOCATION.getOftenUsedString();
     private String latitude;
     private String longitude;
 
     private JSONObject placeInfo;
     private String placeName;
-    private final static String URL_REQUEST_FORECAST = "https://api.opencagedata.com/geocode/v1/json?key="
-            + OPENSAGEDATA_API + "&q=%s" + COMMA + "%s&pretty=5" + "&no_annotations=1&language=%s";
+
 
 
     SearchByGeoposition(SharedPreferences sharedPreferences) {
@@ -53,11 +54,12 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
         latitude = getLatitude();
         longitude = getLongitude();
 
-//        latitude = "54.611007";
-//        longitude = "39.715388";
+//        latitude = "55.279280";
+//        longitude = "38.776972";
         String language = Locale.getDefault().getLanguage();
+        //String language = "ru";
 
-        return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST, latitude, longitude, language));
+        return HttpRequest.excuteGet(String.format(URL_REQUEST_OPENSAGE_GEOPOSITION, latitude, longitude, language));
     }
 
     protected String getLatitude() {
@@ -85,10 +87,14 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
         } catch (JSONException e) {
             saveCityAndCoords(LOCATION, latitude, longitude);
             Dialog_menu.setLoaderVisibility();
+
         } catch (NullPointerException nE) {
             location = NO_SIGNAL;
+            Dialog_menu.setLoaderVisibility();
+            weHaveGeoPosition = false;
         } finally {
-            Dialog_menu.getCity.setText(location);
+            Dialog_menu.setTextCityName(location);
+            Dialog_menu.setLoaderVisibility();
             weHaveGeoPosition = false;
         }
     }
@@ -104,8 +110,7 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
             placeName = components.getString(COUNTY);
         } else if (components.has(TOWN)) {
             placeName = components.getString(TOWN);
-        }
-            else if (components.has(STATE)) {
+        } else if (components.has(STATE)) {
             placeName = components.getString(STATE);
         } else {
             placeName = placeInfo.getString(FORMATTED).split(COMMA)[0];
@@ -119,11 +124,5 @@ public class SearchByGeoposition extends AsyncTask<String, Void, String> {
         editor.apply();
     }
 
-    void printHelloKitty(boolean except) {
-        if (except) {
-            throw new NullPointerException("asdf");
-        }
-        System.out.println("Hello Kitty");
-    }
 
 }

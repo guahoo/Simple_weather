@@ -23,6 +23,7 @@ public class WeatherIconMap {
     private static final String SNOW ="snow" ;
     private static final String SNOW_ALERT = "snow_alert";
     private static final String LIGHT_SNOW = "light snow";
+    private static final String LIGHT_SHOWER_SNOW = "light shower snow";
     private static final String LIGHT_INTENSITY_DRIZZLE = "light intensity drizzle";
     private static final String MIST = "mist";
     private static final String DRIZZLE = "drizzle";
@@ -43,6 +44,7 @@ public class WeatherIconMap {
         weather_icons_map.put(SNOW, R.drawable.ic_snow_alt);
         weather_icons_map.put(SNOW_ALERT,R.drawable.ic_snow_alert_01);
         weather_icons_map.put(LIGHT_SNOW, R.drawable.ic_snow_alt);
+        weather_icons_map.put(LIGHT_SHOWER_SNOW, R.drawable.ic_snow_alt);
         weather_icons_map.put(LIGHT_INTENSITY_DRIZZLE, R.drawable.ic_cloud_sun);
         weather_icons_map.put(MIST,R.drawable.ic_fog);
         weather_icons_map.put(DRIZZLE,R.drawable.ic_fog);

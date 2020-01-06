@@ -23,6 +23,7 @@ import com.app.simpleweather.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
@@ -32,16 +33,18 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import static com.app.simpleweather.ForecastWeather.LIST;
-import static com.app.simpleweather.MainActivity.DESCRIPTION;
-import static com.app.simpleweather.MainActivity.LATITUDE;
-import static com.app.simpleweather.MainActivity.LONGITUDE;
-import static com.app.simpleweather.MainActivity.MAIN;
-import static com.app.simpleweather.MainActivity.TEMP;
-import static com.app.simpleweather.MainActivity.WEATHER;
-import static com.app.simpleweather.MainActivity.WIND;
-import static com.app.simpleweather.MainActivity.WINDSPEED;
-import static com.app.simpleweather.Utility.SearchByGeoposition.CITY_NAME;
-import static com.app.simpleweather.Utility.SearchByGeoposition.NO_SIGNAL;
+import static com.app.simpleweather.Utility.OftenUsedStrings.CITY_NAME;
+import static com.app.simpleweather.Utility.OftenUsedStrings.DESCRIPTION;
+import static com.app.simpleweather.Utility.OftenUsedStrings.LATITUDE;
+import static com.app.simpleweather.Utility.OftenUsedStrings.LONGITUDE;
+import static com.app.simpleweather.Utility.OftenUsedStrings.MAIN;
+import static com.app.simpleweather.Utility.OftenUsedStrings.NO_SIGNAL;
+import static com.app.simpleweather.Utility.OftenUsedStrings.TEMP;
+import static com.app.simpleweather.Utility.OftenUsedStrings.URL_REQUEST_OPEN_WEATHER_MAP_CURRENT_WEATHER;
+import static com.app.simpleweather.Utility.OftenUsedStrings.URL_REQUEST_OPEN_WEATHER_MAP_FORECAST_ALERT;
+import static com.app.simpleweather.Utility.OftenUsedStrings.WEATHER;
+import static com.app.simpleweather.Utility.OftenUsedStrings.WIND;
+import static com.app.simpleweather.Utility.OftenUsedStrings.WINDSPEED;
 import static com.app.simpleweather.Utility.WeatherIconMap.getResourceIdent;
 
 @SuppressWarnings("deprecation")
@@ -50,6 +53,7 @@ public class WeatherRenewService extends Service {
     private static final CharSequence CHANNEL_NAME = "weather_service";
     private static final String WEATHER_RENEW_CHANNEL_DESCRIPRION = "Weather_channel_notification";
     private static final String ALERT_SIGNALS = "rain|shower rain|light rain|snow|light snow";
+    private static final String CHECK_CONNECTION = "Проверьте подключение к сети";
 
     public String PREFERENSES;
     Context context;
@@ -64,7 +68,6 @@ public class WeatherRenewService extends Service {
     Toast toast;
     public Timer time = new Timer();
     String weatherDescription;
-
 
 
     @Override
@@ -116,9 +119,6 @@ public class WeatherRenewService extends Service {
         remoteViews.setTextViewText(R.id.forecastView_notificationBar, temp);
         remoteViews.setTextViewText(R.id.location_notificationBar, location);
         remoteViews.setImageViewResource(R.id.weatherImage, getResourceIdent(weatherType));
-
-
-
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -173,7 +173,7 @@ public class WeatherRenewService extends Service {
 
     public void runWeatherRenewTask() {
 
-        time.schedule(new DisplayToastTimerTask(), 0, 1000 * 60 * 30);
+        time.schedule(new DisplayToastTimerTask(), 0, 1000 * 60*60);
     }
 
     public void stopWeatherRenewTask() {
@@ -190,28 +190,26 @@ public class WeatherRenewService extends Service {
         @Override
         public void run() {
             new ForecastWeather(context).execute();
-          //  toast.show();
+            //  toast.show();
         }
     }
 
 
     public class CurrentWeatherTask extends AsyncTask<String, Void, String> {
-        final static String URL_REQUEST_FORECAST = "https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&units=metric&cnt=1&appid=%s";
-
-
         @Override
         protected String doInBackground(String... args) {
             String cityLat = sharedPreferences.getString(LATITUDE, null);
             String cityLon = sharedPreferences.getString(LONGITUDE, null);
 
-            return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST,cityLat,cityLon, OPEN_WEATHER_MAP_API_KEY));
+            return HttpRequest.excuteGet(String.format(URL_REQUEST_OPEN_WEATHER_MAP_CURRENT_WEATHER,
+                    cityLat, cityLon, OPEN_WEATHER_MAP_API_KEY));
         }
 
         @Override
         public void onPostExecute(String result) {
 
             if (result == null) {
-               soWeGotException();
+                soWeGotException();
             }
 
             try {
@@ -226,33 +224,27 @@ public class WeatherRenewService extends Service {
                 String weatherType = weather.getString(DESCRIPTION);
                 Pattern pattern = Pattern.compile(getResources().getString(R.string.alertWeatherType));
                 Matcher matcher = pattern.matcher(weatherDescription);
-                if (matcher.matches()){
+                if (matcher.matches()) {
                     getMyActivityNotification(temp, location, matcher.group(0));
-                    updateNotification(temp, location,matcher.group(0));
-                }else {
+                    updateNotification(temp, location, matcher.group(0));
+                } else {
                     getMyActivityNotification(temp, location, weatherType);
                     updateNotification(temp, location, weatherType);
                 }
-
-
 
 
             } catch (JSONException e) {
                 soWeGotException();
 
 
-
             }
-
-
-
 
 
         }
     }
 
     private void soWeGotException() {
-        updateNotification(NO_SIGNAL,null,null);
+        updateNotification(NO_SIGNAL, CHECK_CONNECTION, null);
 
     }
 
@@ -264,14 +256,11 @@ public class WeatherRenewService extends Service {
         String windSpeed;
 
 
-
-
         ForecastWeather(Context context) {
             this.context = context;
         }
 
-        final static String URL_REQUEST_FORECAST = "https://api.openweathermap.org/data/2.5/forecast?lat=%s&" +
-                "lon=%s&units=metric&cnt=1&appid=%s";
+
 
 
         @Override
@@ -285,7 +274,7 @@ public class WeatherRenewService extends Service {
             String cityLat = sharedPreferences.getString(LATITUDE, null);
             String cityLon = sharedPreferences.getString(LONGITUDE, null);
 
-            return HttpRequest.excuteGet(String.format(URL_REQUEST_FORECAST, cityLat, cityLon, OPEN_WEATHER_MAP_API_KEY));
+            return HttpRequest.excuteGet(String.format(URL_REQUEST_OPEN_WEATHER_MAP_FORECAST_ALERT, cityLat, cityLon, OPEN_WEATHER_MAP_API_KEY));
         }
 
         @Override
@@ -300,34 +289,36 @@ public class WeatherRenewService extends Service {
                 jArr = jsonResult.getJSONArray(LIST);
 
 
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 soWeGotException();
 
             }
 
-                JSONObject jsonObject;
-                try {
-                    jsonObject = jArr.getJSONObject(0);
-                    JSONObject wind = jsonObject.getJSONObject(WIND);
-                    JSONObject weather = jsonObject.getJSONArray(WEATHER).getJSONObject(0);
+            JSONObject jsonObject;
+            try {
+                jsonObject = jArr.getJSONObject(0);
+                JSONObject wind = jsonObject.getJSONObject(WIND);
+                JSONObject weather = jsonObject.getJSONArray(WEATHER).getJSONObject(0);
 
 
-                    windSpeed = wind.getString(WINDSPEED);
-                    weatherDescription = weather.getString(DESCRIPTION);
+                windSpeed = wind.getString(WINDSPEED);
+                weatherDescription = weather.getString(DESCRIPTION);
 
 
-                    if (weatherDescription.matches(ALERT_SIGNALS)){
-                        weatherDescription=weatherDescription+"_alert";}
-
-                    assyncHandler.sendEmptyMessage(0);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (weatherDescription.matches(ALERT_SIGNALS)) {
+                    weatherDescription = weatherDescription + "_alert";
                 }
 
+                assyncHandler.sendEmptyMessage(0);
 
+            } catch (Exception e) {
+                soWeGotException();
             }
+
+
         }
+    }
+
     Handler assyncHandler = new Handler() {
 
         @Override
@@ -344,7 +335,7 @@ public class WeatherRenewService extends Service {
     };
 
 
-    }
+}
 
 
 

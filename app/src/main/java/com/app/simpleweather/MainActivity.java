@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.app.simpleweather.Utility.Convert;
 import com.app.simpleweather.Utility.Dialog_menu;
 import com.app.simpleweather.Utility.WeatherBar;
-import com.app.simpleweather.Utility.WeatherIconMap;
 import com.app.simpleweather.Utility.WeatherRenewService;
 
 import org.json.JSONArray;
@@ -28,7 +27,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,38 +39,28 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import static com.app.simpleweather.Utility.SearchByGeoposition.CITY_NAME;
+import static com.app.simpleweather.Utility.OftenUsedStrings.CHANNEL_ID;
+import static com.app.simpleweather.Utility.OftenUsedStrings.CHANNEL_NAME;
+import static com.app.simpleweather.Utility.OftenUsedStrings.CITY_NAME;
+import static com.app.simpleweather.Utility.OftenUsedStrings.DEG;
+import static com.app.simpleweather.Utility.OftenUsedStrings.DESCRIPTION;
+import static com.app.simpleweather.Utility.OftenUsedStrings.DT;
+import static com.app.simpleweather.Utility.OftenUsedStrings.HUDIMITY;
+import static com.app.simpleweather.Utility.OftenUsedStrings.ISADAY;
+import static com.app.simpleweather.Utility.OftenUsedStrings.JSONARRAY;
+import static com.app.simpleweather.Utility.OftenUsedStrings.MAIN;
+import static com.app.simpleweather.Utility.OftenUsedStrings.PRESSURE;
+import static com.app.simpleweather.Utility.OftenUsedStrings.TEMP;
+import static com.app.simpleweather.Utility.OftenUsedStrings.WEATHER;
+import static com.app.simpleweather.Utility.OftenUsedStrings.WIND;
+import static com.app.simpleweather.Utility.OftenUsedStrings.WINDSPEED;
+
 import static com.app.simpleweather.Utility.WeatherIconMap.getResourceIdent;
 
 public class MainActivity extends AppCompatActivity {
 
 
-    public static final String ISADAY = "day";
-    protected static final String JSONARRAY = "jsonArray";
-    public static final String MAIN = "main";
-    public static final String DT = "dt";
-    public static final String WIND = "wind";
-    public static final String WEATHER = "weather" ;
-    public static final String TEMP = "temp";
-    public static final String PRESSURE = "pressure" ;
-    public static final String HUDIMITY = "humidity";
-    public static final String WINDSPEED = "speed";
-    public static final String DEG = "deg";
-    public static final String DESCRIPTION = "description";
-    private static final String CHANNEL_ID = "1" ;
-    private static final String CHANNEL_NAME = "Weather channel";
 
-    public static final String LATITUDE = "cityLat";
-    public static final String LONGITUDE = "cityLon";
-    public static final String SYS = "sys";
-    public static final String LOCATION_NAME = "name";
-    public static final String COUNTRY_NAME = "country";
-
-    static final String SUNRISE = "sunrise";
-    static final String SUNSET = "sunset";
-    static final String TEMP_MIN = "temp_min";
-    static final String TEMP_MAX = "temp_max";
-    static final String JSONOBJECT = "jsonObj";
 
     List<Weather_model> weather_forecast = new ArrayList<>();
     Button addressButton;
@@ -96,17 +84,16 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RelativeLayout mainLayout, mainContainer;
     SwipeRefreshLayout pullToRefresh;
-    Dialog_menu dialog_menu;
+    volatile Dialog_menu dialog_menu;
     TextView[] textViews;
     ImageView[] icons;
     WeatherBar weatherBar;
     NotificationManager notificationManager;
     WeatherRenewService weatherRenewService;
     CurrentWeather currentWeather;
-    String CITYNAME;
+
     SharedPreferences sharedPreferences;
-
-
+    boolean dialog_showing;
 
 
     @SuppressLint("ResourceType")
@@ -267,7 +254,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setButtonTextSize() {
-        int spaces = CITYNAME == null ? 0 : CITYNAME.replaceAll("[^ ]", "").length();
+        String displayedCityName=sharedPreferences.getString(CITY_NAME,null);
+        int spaces = displayedCityName == null ? 0 : displayedCityName.replaceAll("[^ ]", "").length();
         if (spaces>=2)addressButton.setTextSize(TypedValue.COMPLEX_UNIT_SP,20f);
     }
 
@@ -303,14 +291,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void soWeGotException() {
-        loader.setVisibility(View.GONE);
-        mainContainer.setVisibility(View.INVISIBLE);
-        errorText.setVisibility(View.VISIBLE);
-        addressButton.setText(getResources().getString(R.string.your_city));
-        dialog_menu.showMenuDialog();
 
-    }
 
 
     protected void init() {
@@ -398,6 +379,28 @@ public class MainActivity extends AppCompatActivity {
             weatherRenewService.stopWeatherRenewTask();
         }
         startService(new Intent(this, WeatherRenewService.class));
+    }
+
+    public void soWeGotException() {
+        loader.setVisibility(View.GONE);
+        mainContainer.setVisibility(View.INVISIBLE);
+        errorText.setVisibility(View.VISIBLE);
+        addressButton.setText(getResources().getString(R.string.your_city));
+
+
+
+        if (dialog_showing){
+            dialog_menu.hideMenuDialog();
+            show_Hide_menu_Dialog_Window(false);
+        }
+        dialog_menu.showMenuDialog();
+        show_Hide_menu_Dialog_Window(true);
+
+    }
+
+    void show_Hide_menu_Dialog_Window(boolean bool){
+        dialog_showing =bool;
+
     }
 
 

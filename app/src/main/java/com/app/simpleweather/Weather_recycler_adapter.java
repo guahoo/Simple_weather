@@ -14,7 +14,8 @@ import java.util.List;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.app.simpleweather.MainActivity.ISADAY;
+
+import static com.app.simpleweather.Utility.OftenUsedStrings.ISADAY;
 import static com.app.simpleweather.Utility.WeatherIconMap.getResourceIdent;
 
 public class Weather_recycler_adapter extends RecyclerView.Adapter<Weather_recycler_adapter.ViewHolder> {

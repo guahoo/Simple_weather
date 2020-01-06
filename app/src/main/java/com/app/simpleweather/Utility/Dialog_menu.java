@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -33,11 +34,11 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
-import static com.app.simpleweather.MainActivity.ISADAY;
-import static com.app.simpleweather.MainActivity.LATITUDE;
-import static com.app.simpleweather.MainActivity.LONGITUDE;
-import static com.app.simpleweather.Utility.SearchByGeoposition.CITY_NAME;
-import static com.app.simpleweather.Utility.SearchByGeoposition.COMMA;
+import static com.app.simpleweather.Utility.OftenUsedStrings.CITY_NAME;
+import static com.app.simpleweather.Utility.OftenUsedStrings.COMMA;
+import static com.app.simpleweather.Utility.OftenUsedStrings.ISADAY;
+import static com.app.simpleweather.Utility.OftenUsedStrings.LATITUDE;
+import static com.app.simpleweather.Utility.OftenUsedStrings.LONGITUDE;
 
 
 public class Dialog_menu {
@@ -59,12 +60,25 @@ public class Dialog_menu {
     GeoLocationFinder geoFinder;
     static volatile boolean weHaveGeoPosition;
     static ProgressBar loader;
+    Dialog d;
+    private static Dialog_menu instance;
+
+
+//    public synchronized Dialog_menu getInstance(SharedPreferences sharedPreferences, Context context) {
+//        this.sharedPreferences = sharedPreferences;
+//        this.context = context;
+//        if (instance == null)
+//            instance = new Dialog_menu();
+//        return instance;
+//    }
 
 
     private SimpleAdapter adapter;
+    //public static final Dialog_menu INSTANCE = new Dialog_menu(SharedPreferences sharedPreferenses,Context condtext);
 
-
+//
     public Dialog_menu(SharedPreferences sharedPreferences, Context context) {
+
         this.sharedPreferences = sharedPreferences;
         this.context = context;
 
@@ -72,8 +86,10 @@ public class Dialog_menu {
 
 
 
+
     public void showMenuDialog() {
-        final Dialog d = new Dialog(context);
+
+        d = new Dialog(context);
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(d.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         Window window = d.getWindow();
@@ -137,6 +153,9 @@ public class Dialog_menu {
     public class SearchLocationNameTask extends AsyncTask<String, Void, String> {
         String getCityName = getCity.getText().toString();
         String locale = Locale.getDefault().getLanguage();
+
+
+
 
         final static String URL_REQUEST_FORECAST=
                 "https://nominatim.openstreetmap.org/search?city=%s&format=json&place=city&accept-language=%s";
@@ -202,10 +221,10 @@ public class Dialog_menu {
                         try {
                             String kept = str.substring(0, str.indexOf(COMMA));
 
-                            getCity.setText(kept);
+                            setTextCityName(kept);
                             saveCityAndCoords(kept, cityLat.get(position).get(LAT), cityLon.get(position).get(LON));
                         } catch (StringIndexOutOfBoundsException sE) {
-                            getCity.setText(str);
+                            setTextCityName(str);
                             saveCityAndCoords(str, cityLat.get(position).get(LAT), cityLon.get(position).get(LON));
                         }
 
@@ -218,10 +237,13 @@ public class Dialog_menu {
 
 
             } catch (JSONException e) {
-                getCity.setText(NOT_FOUND);
+                setTextCityName(NOT_FOUND);
+
             } catch (NullPointerException nE){
 
-               getCity.setText(NO_CONNECTION);
+                setTextCityName(NO_CONNECTION);
+
+
 
             }
 
@@ -266,7 +288,17 @@ public class Dialog_menu {
     public static void setLoaderVisibility() {
 
         loader.setVisibility(View.INVISIBLE);
-
-
     }
+    public static void setTextCityName(String text) {
+
+        int spaces = text.replaceAll("[^ ]", "").length();
+        if (spaces>=2)getCity.setTextSize(TypedValue.COMPLEX_UNIT_SP,15f);
+        getCity.setText(text);
+    }
+
+    public void hideMenuDialog(){
+        d.hide();
+    }
+
+
 }
