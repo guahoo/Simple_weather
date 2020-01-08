@@ -39,6 +39,7 @@ import static com.app.simpleweather.Utility.OftenUsedStrings.LATITUDE;
 import static com.app.simpleweather.Utility.OftenUsedStrings.LONGITUDE;
 import static com.app.simpleweather.Utility.OftenUsedStrings.MAIN;
 import static com.app.simpleweather.Utility.OftenUsedStrings.NO_SIGNAL;
+import static com.app.simpleweather.Utility.OftenUsedStrings.OPEN_WEATHER_MAP_API_KEY;
 import static com.app.simpleweather.Utility.OftenUsedStrings.TEMP;
 import static com.app.simpleweather.Utility.OftenUsedStrings.URL_REQUEST_OPEN_WEATHER_MAP_CURRENT_WEATHER;
 import static com.app.simpleweather.Utility.OftenUsedStrings.URL_REQUEST_OPEN_WEATHER_MAP_FORECAST_ALERT;
@@ -53,7 +54,7 @@ public class WeatherRenewService extends Service {
     private static final CharSequence CHANNEL_NAME = "weather_service";
     private static final String WEATHER_RENEW_CHANNEL_DESCRIPRION = "Weather_channel_notification";
     private static final String ALERT_SIGNALS = "rain|shower rain|light rain|snow|light snow";
-    private static final String CHECK_CONNECTION = "Проверьте подключение к сети";
+    private static final String CHECK_CONNECTION = "Проверьте подключение к интернету";
 
     public String PREFERENSES;
     Context context;
@@ -61,7 +62,6 @@ public class WeatherRenewService extends Service {
     RemoteViews remoteViews;
     SharedPreferences sharedPreferences;
     String PREFERENCES;
-    String OPEN_WEATHER_MAP_API_KEY = "b542736e613d2382837ad821803eb507";
     NotificationManager notificationManager;
     NotificationCompat.Builder builder;
     SharedPreferences sPrefs;

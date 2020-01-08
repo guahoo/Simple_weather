@@ -2,6 +2,7 @@ package com.app.simpleweather.Utility;
 
 public class OftenUsedStrings {
     public static String OPENSAGEDATA_API ="835b77b309444de689cd7c07b675493e";
+    public static String OPEN_WEATHER_MAP_API_KEY = "b542736e613d2382837ad821803eb507";
 
     public static String RESULTS="results";
     public static String CITY="city";
