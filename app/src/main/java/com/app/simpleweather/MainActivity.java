@@ -255,8 +255,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setButtonTextSize() {
         String displayedCityName=sharedPreferences.getString(CITY_NAME,null);
-        int spaces = displayedCityName == null ? 0 : displayedCityName.replaceAll("[^ ]", "").length();
-        if (spaces>=2)addressButton.setTextSize(TypedValue.COMPLEX_UNIT_SP,20f);
+        int spaces = displayedCityName == null ? 0 : displayedCityName.length();
+        if (spaces>=20)addressButton.setTextSize(TypedValue.COMPLEX_UNIT_SP,20f);
     }
 
     protected void set_day_night_background(long updatedAt, long rise, long set) {

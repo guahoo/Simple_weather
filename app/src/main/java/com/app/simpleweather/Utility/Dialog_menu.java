@@ -76,15 +76,13 @@ public class Dialog_menu {
     private SimpleAdapter adapter;
     //public static final Dialog_menu INSTANCE = new Dialog_menu(SharedPreferences sharedPreferenses,Context condtext);
 
-//
+    //
     public Dialog_menu(SharedPreferences sharedPreferences, Context context) {
 
         this.sharedPreferences = sharedPreferences;
         this.context = context;
 
     }
-
-
 
 
     public void showMenuDialog() {
@@ -155,9 +153,7 @@ public class Dialog_menu {
         String locale = Locale.getDefault().getLanguage();
 
 
-
-
-        final static String URL_REQUEST_FORECAST=
+        final static String URL_REQUEST_FORECAST =
                 "https://nominatim.openstreetmap.org/search?city=%s&format=json&place=city&accept-language=%s";
 
         @Override
@@ -170,8 +166,7 @@ public class Dialog_menu {
         protected String doInBackground(String... strings) {
 
 
-
-                return NominativeConnect.excuteGet(String.format(URL_REQUEST_FORECAST,getCityName,locale));
+            return NominativeConnect.excuteGet(String.format(URL_REQUEST_FORECAST, getCityName, locale));
 
         }
 
@@ -239,10 +234,9 @@ public class Dialog_menu {
             } catch (JSONException e) {
                 setTextCityName(NOT_FOUND);
 
-            } catch (NullPointerException nE){
+            } catch (NullPointerException nE) {
 
                 setTextCityName(NO_CONNECTION);
-
 
 
             }
@@ -289,14 +283,15 @@ public class Dialog_menu {
 
         loader.setVisibility(View.INVISIBLE);
     }
+
     public static void setTextCityName(String text) {
 
-        int spaces = text.replaceAll("[^ ]", "").length();
-        if (spaces>=2)getCity.setTextSize(TypedValue.COMPLEX_UNIT_SP,15f);
+        int spaces = text.length();
+        if (spaces >= 20) getCity.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f);
         getCity.setText(text);
     }
 
-    public void hideMenuDialog(){
+    public void hideMenuDialog() {
         d.hide();
     }
 

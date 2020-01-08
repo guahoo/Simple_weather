@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import com.androdocs.httprequest.HttpRequest;
 import com.app.simpleweather.Utility.Convert;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -124,8 +125,11 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
             JSONObject sys = jsonObj.getJSONObject(SYS);
             JSONObject wind = jsonObj.getJSONObject(WIND);
 
-
-            setWindDirection(Integer.parseInt(wind.getString(DEG)));
+            try {
+                setWindDirection(Integer.parseInt(wind.getString(DEG)));
+            }catch (JSONException jE){
+                setWindDirection(0);
+            }
             int windSpeedConverting = (int) Double.parseDouble(wind.getString(WINDSPEED));
             windSpeed = (windSpeedConverting) + " ";
 
