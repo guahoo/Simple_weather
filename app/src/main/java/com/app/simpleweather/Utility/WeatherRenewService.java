@@ -173,7 +173,7 @@ public class WeatherRenewService extends Service {
 
     public void runWeatherRenewTask() {
 
-        time.schedule(new DisplayToastTimerTask(), 0, 1000 * 60* 60 );
+        time.schedule(new DisplayToastTimerTask(), 0, 1000 * 60 * 60 );
     }
 
     public void stopWeatherRenewTask() {
