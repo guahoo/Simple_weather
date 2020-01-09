@@ -173,7 +173,7 @@ public class WeatherRenewService extends Service {
 
     public void runWeatherRenewTask() {
 
-        time.schedule(new DisplayToastTimerTask(), 0, 1000 * 60*60);
+        time.schedule(new DisplayToastTimerTask(), 0, 1000 * 60 * 60);
     }
 
     public void stopWeatherRenewTask() {
@@ -249,6 +249,7 @@ public class WeatherRenewService extends Service {
     }
 
     public class ForecastWeather extends AsyncTask<String, Void, String> {
+        private static final String ALERT = "_alert";
         JSONArray jArr;
         SharedPreferences sharedPreferences;
         String PREFERENCES;
@@ -306,7 +307,7 @@ public class WeatherRenewService extends Service {
 
 
                 if (weatherDescription.matches(ALERT_SIGNALS)) {
-                    weatherDescription = weatherDescription + "_alert";
+                    weatherDescription = weatherDescription + ALERT;
                 }
 
                 assyncHandler.sendEmptyMessage(0);
