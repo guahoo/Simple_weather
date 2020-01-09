@@ -129,7 +129,9 @@ public final class GeoLocationFinder implements LocationListener {
                 PERMISSION_ID
 
         );
+        getLastLocation();
         return true;
+
     }
 
 

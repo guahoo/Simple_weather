@@ -61,16 +61,8 @@ public class Dialog_menu {
     static volatile boolean weHaveGeoPosition;
     static ProgressBar loader;
     Dialog d;
-    private static Dialog_menu instance;
 
 
-//    public synchronized Dialog_menu getInstance(SharedPreferences sharedPreferences, Context context) {
-//        this.sharedPreferences = sharedPreferences;
-//        this.context = context;
-//        if (instance == null)
-//            instance = new Dialog_menu();
-//        return instance;
-//    }
 
 
     private SimpleAdapter adapter;
