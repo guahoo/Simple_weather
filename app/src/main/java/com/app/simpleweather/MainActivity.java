@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
         updateTxt.setText(currentWeather.getUpdatedAtText());
         addressButton.setText(sharedPreferences.getString(CITY_NAME,null));
         setButtonTextSize();
-        windTextView.setText(currentWeather.windSpeed + currentWeather.windDirection);
+        windTextView.setText(String.format("%s%s", currentWeather.windSpeed, currentWeather.windDirection));
         loader.setVisibility(View.GONE);
         mainContainer.setVisibility(View.VISIBLE);
         addressButton.setVisibility(View.VISIBLE);
