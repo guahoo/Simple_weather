@@ -24,27 +24,25 @@ import com.google.android.gms.location.LocationServices;
 import androidx.core.app.ActivityCompat;
 
 public final class GeoLocationFinder implements LocationListener {
-    private int PERMISSION_ID = 44;
 
-    FusedLocationProviderClient mFusedLocationClient;
-    Context context;
-    SharedPreferences sharedPreferences;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private Context context;
+    private SharedPreferences sharedPreferences;
 
-    public static String getLatitude() {
+    static String getLatitude() {
         return latitude;
     }
 
-    public static String getLongitude() {
+    static String getLongitude() {
         return longitude;
     }
 
     private static String latitude, longitude;
 
 
-    public GeoLocationFinder(Context context, SharedPreferences sharedPreferences) {
+    GeoLocationFinder(Context context, SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
         this.context = context;
-        this.context=context;
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
 
     }
@@ -64,11 +62,10 @@ public final class GeoLocationFinder implements LocationListener {
         mFusedLocationClient.getLastLocation().addOnCompleteListener(
                 task -> {
                     Location location = task.getResult();
-//                    if (location == null) {
                     requestNewLocationData();
-//                        return;
-//                    }
+
                     try {
+                        assert location != null;
                         latitude = String.valueOf((location.getLatitude()));
                         longitude = String.valueOf((location.getLongitude()));
                         new SearchByGeoposition(sharedPreferences).execute();
@@ -88,8 +85,7 @@ public final class GeoLocationFinder implements LocationListener {
 
 
     @SuppressLint("MissingPermission")
-       public void requestNewLocationData(){
-//TODO: разобраться с обновлением местоположения
+    private void requestNewLocationData(){
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(0);
@@ -123,6 +119,7 @@ public final class GeoLocationFinder implements LocationListener {
         if (checkPermissions()) {
             return false;
         }
+        int PERMISSION_ID = 44;
         ActivityCompat.requestPermissions(
                 (MainActivity)context,
                 new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
@@ -137,6 +134,7 @@ public final class GeoLocationFinder implements LocationListener {
 
     private boolean isLocationEnabled() {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        assert locationManager != null;
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
                 LocationManager.NETWORK_PROVIDER
         );

@@ -158,7 +158,7 @@ public class Dialog_menu {
         protected String doInBackground(String... strings) {
 
 
-            return NominativeConnect.excuteGet(String.format(URL_REQUEST_FORECAST, getCityName, locale));
+            return NominativeConnect.executeGetGet(String.format(URL_REQUEST_FORECAST, getCityName, locale));
 
         }
 

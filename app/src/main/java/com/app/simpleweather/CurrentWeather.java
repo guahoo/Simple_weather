@@ -25,6 +25,7 @@ import static com.app.simpleweather.Utility.OftenUsedStrings.LATITUDE;
 import static com.app.simpleweather.Utility.OftenUsedStrings.LOCATION_NAME;
 import static com.app.simpleweather.Utility.OftenUsedStrings.LONGITUDE;
 import static com.app.simpleweather.Utility.OftenUsedStrings.MAIN;
+import static com.app.simpleweather.Utility.OftenUsedStrings.OPEN_WEATHER_MAP_API_KEY;
 import static com.app.simpleweather.Utility.OftenUsedStrings.SUNRISE;
 import static com.app.simpleweather.Utility.OftenUsedStrings.SUNSET;
 import static com.app.simpleweather.Utility.OftenUsedStrings.SYS;
@@ -38,25 +39,13 @@ import static com.app.simpleweather.Utility.OftenUsedStrings.WINDSPEED;
 public class CurrentWeather extends AsyncTask<String, Void, String> {
 
 
-    Context context;
-    public static final String OPENWEATHERMAP_API_KEY = "b542736e613d2382837ad821803eb507";
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
-    String PREFERENCES;
+    private static final String PATTERN_HOURS_MINUTES = "HH:mm";
+    private Context context;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+    private String PREFERENCES;
     String jsonString;
 
-
-    public String getLocation() {
-        return location;
-    }
-
-    public String getTempMin() {
-        return tempMin;
-    }
-
-    public String getTempMax() {
-        return tempMax;
-    }
 
     public String getUpdatedAtText() {
         return updatedAtText;
@@ -75,13 +64,8 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
         return weatherType;
     }
 
-    String weatherType;
-    String location;
-    String tempMin;
-    String tempMax;
-    String updatedAtText;
-    String windDirection;
-    String windSpeed;
+    String weatherType,location,updatedAtText,windDirection,windSpeed;
+
 
 
     public String getTemp() {
@@ -89,7 +73,7 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
     }
 
     String temp;
-    long sunrise, sunset, updatedAt;
+    private long sunrise, sunset, updatedAt;
 
 
     public CurrentWeather(Context context) {
@@ -107,7 +91,7 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
         String latitude = sharedPreferences.getString(LATITUDE, null);
         String longitude = sharedPreferences.getString(LONGITUDE, null);
 
-        return HttpRequest.excuteGet(String.format(URL_REQUEST_OPEN_WEATHER_MAP_CURRENT_WEATHER, latitude, longitude, OPENWEATHERMAP_API_KEY));
+        return HttpRequest.excuteGet(String.format(URL_REQUEST_OPEN_WEATHER_MAP_CURRENT_WEATHER, latitude, longitude, OPEN_WEATHER_MAP_API_KEY));
     }
 
     @Override
@@ -145,9 +129,7 @@ public class CurrentWeather extends AsyncTask<String, Void, String> {
             temp = Convert.tempString(main.getString(TEMP));
 
 
-            //TODO formatted
-
-            updatedAtText = new SimpleDateFormat("HH:mm", Locale.ENGLISH)
+            updatedAtText = new SimpleDateFormat(PATTERN_HOURS_MINUTES, Locale.ENGLISH)
                     .format(new Date(updatedAt * 1000));
 
 

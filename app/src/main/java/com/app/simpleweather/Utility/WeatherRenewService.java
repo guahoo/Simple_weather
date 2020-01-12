@@ -55,8 +55,9 @@ public class WeatherRenewService extends Service {
     private static final String WEATHER_RENEW_CHANNEL_DESCRIPRION = "Weather_channel_notification";
     private static final String ALERT_SIGNALS = "rain|shower rain|light rain|snow|light snow";
     private static final String CHECK_CONNECTION = "Проверьте подключение к интернету";
+    private static final String ALERT = "_alert";
 
-    public String PREFERENSES;
+
     Context context;
     String NOTIF_CHANNEL_ID = "1";
     RemoteViews remoteViews;
@@ -64,10 +65,13 @@ public class WeatherRenewService extends Service {
     String PREFERENCES;
     NotificationManager notificationManager;
     NotificationCompat.Builder builder;
-    SharedPreferences sPrefs;
     Toast toast;
     public Timer time = new Timer();
     String weatherDescription;
+    String cityLat;
+    String cityLon;
+    JSONArray jArr;
+    String windSpeed;
 
 
     @Override
@@ -79,11 +83,11 @@ public class WeatherRenewService extends Service {
         notificationManager = (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         sharedPreferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
 
-
-        sPrefs = getApplicationContext().getSharedPreferences(PREFERENSES, MODE_PRIVATE);
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         builder = new NotificationCompat.Builder(this);
-        new ForecastWeather(context).execute();
+        cityLat = sharedPreferences.getString(LATITUDE, null);
+        cityLon = sharedPreferences.getString(LONGITUDE, null);
+        new ForecastWeather().execute();
         toast = Toast.makeText(getApplicationContext(),
                 "Пора покормить кота!", Toast.LENGTH_LONG);
 
@@ -120,24 +124,15 @@ public class WeatherRenewService extends Service {
         remoteViews.setTextViewText(R.id.location_notificationBar, location);
         remoteViews.setImageViewResource(R.id.weatherImage, getResourceIdent(weatherType));
 
-
+        Notification.Builder notifyBuilder=new Notification.Builder(context);
+        notifyBuilder.setSmallIcon(getResourceIdent(weatherType))
+                .setContent(remoteViews)
+                .setOngoing(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return new Notification.Builder(context)
-
-                    .setSmallIcon(getResourceIdent(weatherType))
-                    .setContent(remoteViews)
-                    .setOngoing(true)
-                    .setChannelId(NOTIF_CHANNEL_ID)
-                    .setContentIntent(contentIntent).getNotification();
-
-        } else {
-
-            return new Notification.Builder(context)
-                    .setSmallIcon(R.drawable.ic_sun)
-                    .setContent(remoteViews)
-                    .setOngoing(true)
-                    .setContentIntent(contentIntent).getNotification();
+            notifyBuilder.setChannelId(NOTIF_CHANNEL_ID);
         }
+
+        return notifyBuilder.setContentIntent(contentIntent).getNotification();
 
 
     }
@@ -151,11 +146,9 @@ public class WeatherRenewService extends Service {
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = CHANNEL_NAME;
-            String description = WEATHER_RENEW_CHANNEL_DESCRIPRION;
             int importance = NotificationManager.IMPORTANCE_LOW;
-            NotificationChannel channel = new NotificationChannel(NOTIF_CHANNEL_ID, name, importance);
-            channel.setDescription(description);
+            NotificationChannel channel = new NotificationChannel(NOTIF_CHANNEL_ID, CHANNEL_NAME, importance);
+            channel.setDescription(WEATHER_RENEW_CHANNEL_DESCRIPRION);
 
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             assert notificationManager != null;
@@ -173,7 +166,7 @@ public class WeatherRenewService extends Service {
 
     public void runWeatherRenewTask() {
 
-        time.schedule(new DisplayToastTimerTask(), 0, 1000 * 60 * 60 );
+        time.schedule(new DisplayToastTimerTask(), 0, 1000 * 60 * 60);
     }
 
     public void stopWeatherRenewTask() {
@@ -182,14 +175,10 @@ public class WeatherRenewService extends Service {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void startMyOwnForeground() {
-    }
-
     private class DisplayToastTimerTask extends TimerTask {
         @Override
         public void run() {
-            new ForecastWeather(context).execute();
+            new ForecastWeather().execute();
             //  toast.show();
         }
     }
@@ -198,8 +187,6 @@ public class WeatherRenewService extends Service {
     public class CurrentWeatherTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... args) {
-            String cityLat = sharedPreferences.getString(LATITUDE, null);
-            String cityLon = sharedPreferences.getString(LONGITUDE, null);
 
             return HttpRequest.excuteGet(String.format(URL_REQUEST_OPEN_WEATHER_MAP_CURRENT_WEATHER,
                     cityLat, cityLon, OPEN_WEATHER_MAP_API_KEY));
@@ -222,7 +209,7 @@ public class WeatherRenewService extends Service {
 
 
                 String weatherType = weather.getString(DESCRIPTION);
-                Pattern pattern = Pattern.compile(getResources().getString(R.string.alertWeatherType));
+                Pattern pattern = Pattern.compile(ALERT_SIGNALS);
                 Matcher matcher = pattern.matcher(weatherDescription);
                 if (matcher.matches()) {
                     getMyActivityNotification(temp, location, matcher.group(0));
@@ -249,32 +236,15 @@ public class WeatherRenewService extends Service {
     }
 
     public class ForecastWeather extends AsyncTask<String, Void, String> {
-        private static final String ALERT = "_alert";
-        JSONArray jArr;
-        SharedPreferences sharedPreferences;
-        String PREFERENCES;
-        Context context;
-        String windSpeed;
-
-
-        ForecastWeather(Context context) {
-            this.context = context;
-        }
-
-
 
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            sharedPreferences = context.getSharedPreferences(PREFERENCES, MODE_PRIVATE);
         }
 
         @Override
         protected String doInBackground(String... strings) {
-            String cityLat = sharedPreferences.getString(LATITUDE, null);
-            String cityLon = sharedPreferences.getString(LONGITUDE, null);
-
             return HttpRequest.excuteGet(String.format(URL_REQUEST_OPEN_WEATHER_MAP_FORECAST_ALERT, cityLat, cityLon, OPEN_WEATHER_MAP_API_KEY));
         }
 

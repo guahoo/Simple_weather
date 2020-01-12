@@ -36,7 +36,7 @@ public class Weather_model {
     }
 
 
-    String getHudimity() {
+    String getHumidity() {
         return humidity;
     }
 

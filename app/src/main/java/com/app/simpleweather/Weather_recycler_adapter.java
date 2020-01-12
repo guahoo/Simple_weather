@@ -54,8 +54,8 @@ public class Weather_recycler_adapter extends RecyclerView.Adapter<Weather_recyc
         weather_type_set_icon(holder, weather_model.getWeather_type());
         holder.temperature.setText(weather_model.getTemperature());
         holder.pressure.setText(weather_model.getPressure());
-        holder.humidity.setText(weather_model.getHudimity());
-        holder.wind.setText(weather_model.getWind()+weather_model.windDirection);
+        holder.humidity.setText(weather_model.getHumidity());
+        holder.wind.setText(String.format("%s%s", weather_model.getWind(), weather_model.windDirection));
 
     }
 
