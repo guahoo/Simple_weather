@@ -5,14 +5,8 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -47,16 +41,17 @@ public class SearchByGeopositionTest {
     @Test
     public void onPostExecute() {
     }
-
+/*
     @Test
+    @Ignore
     public void helloKitty() {
-        doCallRealMethod().when(subj).printHelloKitty(anyBoolean());
+       // doCallRealMethod().when(subj).printHelloKitty(anyBoolean());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
         System.setOut(ps);
 
-        subj.printHelloKitty(false);
+       // subj.printHelloKitty(false);
 
 
 
@@ -66,10 +61,12 @@ public class SearchByGeopositionTest {
 
 
         try {
-            subj.printHelloKitty(true);
+         //   subj.printHelloKitty(true);
             fail();
         } catch (NullPointerException e) {
 
         }
     }
+    */
+
 }

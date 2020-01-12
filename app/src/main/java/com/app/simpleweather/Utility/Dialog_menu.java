@@ -118,8 +118,8 @@ public class Dialog_menu {
         getLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                geoFinder.getLastLocation();
                 loader.setVisibility(View.VISIBLE);
+                geoFinder.getLastLocation();
 
 
             }

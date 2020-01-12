@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import com.app.simpleweather.Utility.Convert;
 import com.app.simpleweather.Utility.Dialog_menu;
+import com.app.simpleweather.Utility.GeoLocationFinder;
 import com.app.simpleweather.Utility.WeatherBar;
 import com.app.simpleweather.Utility.WeatherRenewService;
 
@@ -34,6 +36,7 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,12 +57,9 @@ import static com.app.simpleweather.Utility.OftenUsedStrings.TEMP;
 import static com.app.simpleweather.Utility.OftenUsedStrings.WEATHER;
 import static com.app.simpleweather.Utility.OftenUsedStrings.WIND;
 import static com.app.simpleweather.Utility.OftenUsedStrings.WINDSPEED;
-
 import static com.app.simpleweather.Utility.WeatherIconMap.getResourceIdent;
 
-public class MainActivity extends AppCompatActivity {
-
-
+public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
 
     List<Weather_model> weather_forecast = new ArrayList<>();
@@ -67,13 +67,12 @@ public class MainActivity extends AppCompatActivity {
     String PREFERENCES;
 
 
-
     JSONArray jArr;
     private static final String NOTIF_CHANNEL_ID = "1";
-    private static int firstVisibleInListview;
-    TextView tempTxt,  sunriseTxt,
+    private static int firstVisibleInListView;
+    TextView tempTxt, sunriseTxt,
             sunsetTxt, updateTxt, forecast_date, errorText, windTextView;
-    ImageView sun_rise_icon, currentWeatherStatusView, sun_set_icon, hour_View, weather_View, temp_View, pressure_View, humidity_View, wind_View,current_Wind_View;
+    ImageView sun_rise_icon, currentWeatherStatusView, sun_set_icon, hour_View, weather_View, temp_View, pressure_View, humidity_View, wind_View, current_Wind_View;
 
 
     ProgressBar loader;
@@ -108,22 +107,14 @@ public class MainActivity extends AppCompatActivity {
         currentWeather = new CurrentWeather(this);
 
 
-
-
         notificationManager =
                 (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
-
-
-
-
-
 
 
         addressButton.setOnClickListener(v -> dialog_menu.showMenuDialog());
 
         pullToRefresh.setOnRefreshListener(() -> {
-            currentWeather=new CurrentWeather(this);
+            currentWeather = new CurrentWeather(this);
             currentWeather.execute();
 
             new ForecastWeather(this).execute();
@@ -137,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 int currentFirstVisible = layoutManager.findFirstVisibleItemPosition();
-                if (currentFirstVisible > firstVisibleInListview) {
+                if (currentFirstVisible > firstVisibleInListView) {
                     try {
                         setForecastDate(currentFirstVisible);
                     } catch (JSONException e) {
@@ -152,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 }
-                firstVisibleInListview = currentFirstVisible;
+                firstVisibleInListView = currentFirstVisible;
             }
         });
     }
@@ -164,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (sharedPreferences.getAll().isEmpty()) {
             dialog_menu.showMenuDialog();
-        }else {
+        } else {
             executeWeatherTask();
         }
     }
@@ -176,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
         long updatedAt = jsonObject.getLong(DT);
         //TODO formatter
 
-        String updatedAtText_date = new SimpleDateFormat("dd.MM EEEE",Locale.getDefault())
+        String updatedAtText_date = new SimpleDateFormat("dd.MM EEEE", Locale.getDefault())
                 .format(new Date(updatedAt * 1000)).toUpperCase();
         forecast_date.setText((updatedAtText_date));
     }
@@ -195,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
     public void setForecastInitialData() throws JSONException {
         jsonString = sharedPreferences.getString(JSONARRAY, null);
         jArr = new JSONArray(jsonString);
-        firstVisibleInListview = layoutManager.findFirstVisibleItemPosition();
+        firstVisibleInListView = layoutManager.findFirstVisibleItemPosition();
         adapter = new Weather_recycler_adapter(this, weather_forecast);
         recyclerView.setAdapter(adapter);
         weather_forecast.clear();
@@ -219,14 +210,14 @@ public class MainActivity extends AppCompatActivity {
 
                 String pressure = main.getString(PRESSURE);
                 String humidity = main.getString(HUDIMITY);
-                int windSpeedConverting=(int)Double.parseDouble(wind.getString(WINDSPEED));
-                String windSpeed =String.valueOf(windSpeedConverting)+" ";
-                int windDirection =Integer.parseInt(wind.getString(DEG));
+                int windSpeedConverting = (int) Double.parseDouble(wind.getString(WINDSPEED));
+                String windSpeed = String.valueOf(windSpeedConverting) + " ";
+                int windDirection = Integer.parseInt(wind.getString(DEG));
                 String weatherDescription = weather.getString(DESCRIPTION);
 
 
                 weather_forecast.add(new Weather_model(updatedAtText_hour, weatherDescription,
-                        temp, pressure, humidity, windSpeed,windDirection));
+                        temp, pressure, humidity, windSpeed, windDirection));
 
             } catch (JSONException e) {
                 findViewById(R.id.loader).setVisibility(View.GONE);
@@ -244,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
         sunsetTxt.setText(new SimpleDateFormat("HH:mm ", Locale.ENGLISH).format(new Date(currentWeather.getSunset() * 1000)));
         currentWeatherStatusView.setImageResource(getResourceIdent(currentWeather.getWeatherType()));
         updateTxt.setText(currentWeather.getUpdatedAtText());
-        addressButton.setText(sharedPreferences.getString(CITY_NAME,null));
+        addressButton.setText(sharedPreferences.getString(CITY_NAME, null));
         setButtonTextSize();
         windTextView.setText(String.format("%s%s", currentWeather.windSpeed, currentWeather.windDirection));
         loader.setVisibility(View.GONE);
@@ -254,9 +245,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setButtonTextSize() {
-        String displayedCityName=sharedPreferences.getString(CITY_NAME,null);
+        String displayedCityName = sharedPreferences.getString(CITY_NAME, null);
         int spaces = displayedCityName == null ? 0 : displayedCityName.length();
-        if (spaces>=20)addressButton.setTextSize(TypedValue.COMPLEX_UNIT_SP,20f);
+        if (spaces >= 20) addressButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
     }
 
     protected void set_day_night_background(long updatedAt, long rise, long set) {
@@ -281,17 +272,14 @@ public class MainActivity extends AppCompatActivity {
     private void setImageViewsColor(boolean dayNight) {
         int imagesColor = dayNight ? R.color.blackTextColor : R.color.whiteColor;
         for (ImageView imageViewTemp : icons) {
-            imageViewTemp.setColorFilter(ContextCompat.getColor(this,imagesColor));
+            imageViewTemp.setColorFilter(ContextCompat.getColor(this, imagesColor));
         }
     }
 
-    private void setBackgroundGradientColor(boolean dayNight){
+    private void setBackgroundGradientColor(boolean dayNight) {
         int backGroundColor = dayNight ? R.drawable.bg_gradient_day : R.drawable.bg_gradient_night;
         mainLayout.setBackgroundResource(backGroundColor);
     }
-
-
-
 
 
     protected void init() {
@@ -314,11 +302,11 @@ public class MainActivity extends AppCompatActivity {
 
         sun_rise_icon = findViewById(R.id.sun_rise_icon);
         sun_set_icon = findViewById(R.id.sun_set_icon);
-        current_Wind_View=findViewById(R.id.currentWindView);
+        current_Wind_View = findViewById(R.id.currentWindView);
         hour_View = findViewById(R.id.hour_view);
         weather_View = findViewById(R.id.weather_view);
         temp_View = findViewById(R.id.temp_view);
-        windTextView =findViewById(R.id.windDirectionTextView);
+        windTextView = findViewById(R.id.windDirectionTextView);
         pressure_View = findViewById(R.id.pressure_view);
         humidity_View = findViewById(R.id.hudimity_view);
         wind_View = findViewById(R.id.wind_view);
@@ -327,7 +315,6 @@ public class MainActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
         weatherRenewService = new WeatherRenewService();
-
 
 
         loader.setVisibility(View.VISIBLE);
@@ -341,8 +328,8 @@ public class MainActivity extends AppCompatActivity {
         addressButton.setText(getResources().getString(R.string.please_wait));
 
 
-        icons = new ImageView[]{sun_set_icon, sun_rise_icon, currentWeatherStatusView,hour_View,
-                weather_View, temp_View, pressure_View, humidity_View, wind_View,current_Wind_View};
+        icons = new ImageView[]{sun_set_icon, sun_rise_icon, currentWeatherStatusView, hour_View,
+                weather_View, temp_View, pressure_View, humidity_View, wind_View, current_Wind_View};
         weatherBar = new WeatherBar(getApplicationContext());
 
     }
@@ -388,8 +375,7 @@ public class MainActivity extends AppCompatActivity {
         addressButton.setText(getResources().getString(R.string.your_city));
 
 
-
-        if (dialog_showing){
+        if (dialog_showing) {
             dialog_menu.hideMenuDialog();
             show_Hide_menu_Dialog_Window(false);
         }
@@ -398,10 +384,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    void show_Hide_menu_Dialog_Window(boolean bool){
-        dialog_showing =bool;
+    void show_Hide_menu_Dialog_Window(boolean bool) {
+        dialog_showing = bool;
 
     }
 
-
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                    @NonNull int[] grantResults){
+        if (grantResults != null && grantResults.length > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            new GeoLocationFinder(this, sharedPreferences).getLastLocation();
+        }
+    }
 }

@@ -40,7 +40,7 @@ public final class GeoLocationFinder implements LocationListener {
     private static String latitude, longitude;
 
 
-    GeoLocationFinder(Context context, SharedPreferences sharedPreferences) {
+    public GeoLocationFinder(Context context, SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
         this.context = context;
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
@@ -48,8 +48,12 @@ public final class GeoLocationFinder implements LocationListener {
     }
 
     @SuppressLint("MissingPermission")
-     void getLastLocation(){
-        if (!requestPermissions() && !requestLastLocation()) {
+     public void getLastLocation(){
+        if (!checkPermissions()) {
+            requestPermissions();
+            return;
+        }
+        if (!requestLastLocation()) {
             startActivityTurnOnLocation();
         }
     }
@@ -115,10 +119,7 @@ public final class GeoLocationFinder implements LocationListener {
                 ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
-    private boolean requestPermissions() {
-        if (checkPermissions()) {
-            return false;
-        }
+    private void requestPermissions() {
         int PERMISSION_ID = 44;
         ActivityCompat.requestPermissions(
                 (MainActivity)context,
@@ -126,9 +127,6 @@ public final class GeoLocationFinder implements LocationListener {
                 PERMISSION_ID
 
         );
-        getLastLocation();
-        return true;
-
     }
 
 
