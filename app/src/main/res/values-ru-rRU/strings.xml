@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Simple Weather</string>
+    <string name="please_wait">Подождите…</string>
+    <string name="connection_error">Что-то пошло не так, проверьте подключение к интернету</string>
+    <string name="NO_SIGNAL">Нет сети</string>
+    <string name="LOCATION">Ваше местоположение</string>
+    <string name="check_connection">Проверьте подключение к интернету</string>
+    <string name="exampleCity">Бобруйск</string>
+</resources>

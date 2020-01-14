@@ -93,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     SharedPreferences sharedPreferences;
     boolean dialog_showing;
+    public static String NO_SIGNAL;
+    public static String LOCATION;
 
 
     @SuppressLint("ResourceType")
@@ -101,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
+        NO_SIGNAL=getResources().getString(R.string.NO_SIGNAL);
+        LOCATION=getResources().getString(R.string.LOCATION);
 
 
         init();

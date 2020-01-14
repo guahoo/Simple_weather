@@ -12,6 +12,8 @@ import org.json.JSONObject;
 import java.util.Locale;
 
 
+import static com.app.simpleweather.MainActivity.LOCATION;
+import static com.app.simpleweather.MainActivity.NO_SIGNAL;
 import static com.app.simpleweather.Utility.Dialog_menu.weHaveGeoPosition;
 import static com.app.simpleweather.Utility.OftenUsedStrings.CITY;
 import static com.app.simpleweather.Utility.OftenUsedStrings.CITY_NAME;
@@ -21,10 +23,7 @@ import static com.app.simpleweather.Utility.OftenUsedStrings.COUNTY;
 import static com.app.simpleweather.Utility.OftenUsedStrings.FORMATTED;
 import static com.app.simpleweather.Utility.OftenUsedStrings.HAMLET;
 import static com.app.simpleweather.Utility.OftenUsedStrings.LATITUDE;
-import static com.app.simpleweather.Utility.OftenUsedStrings.LOCATION;
 import static com.app.simpleweather.Utility.OftenUsedStrings.LONGITUDE;
-import static com.app.simpleweather.Utility.OftenUsedStrings.NO_SIGNAL;
-import static com.app.simpleweather.Utility.OftenUsedStrings.OPENSAGEDATA_API;
 import static com.app.simpleweather.Utility.OftenUsedStrings.RESULTS;
 import static com.app.simpleweather.Utility.OftenUsedStrings.STATE;
 import static com.app.simpleweather.Utility.OftenUsedStrings.TOWN;

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Simple Weather</string>
+    <string name="please_wait">Warte ...</string>
+    <string name="exampleCity">Berlin</string>
+    <string name="connection_error">Es ist ein Fehler aufgetreten. Überprüfen Sie Ihre Internetverbindung</string>
+    <string name="check_connection">Überprüfen Sie Ihre Internetverbindung</string>
+    <string name="LOCATION">Ihr Standort</string>
+    <string name="NO_SIGNAL">Kein netzwerk</string>
+</resources>

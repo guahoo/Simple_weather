@@ -38,7 +38,6 @@ import static com.app.simpleweather.Utility.OftenUsedStrings.DESCRIPTION;
 import static com.app.simpleweather.Utility.OftenUsedStrings.LATITUDE;
 import static com.app.simpleweather.Utility.OftenUsedStrings.LONGITUDE;
 import static com.app.simpleweather.Utility.OftenUsedStrings.MAIN;
-import static com.app.simpleweather.Utility.OftenUsedStrings.NO_SIGNAL;
 import static com.app.simpleweather.Utility.OftenUsedStrings.OPEN_WEATHER_MAP_API_KEY;
 import static com.app.simpleweather.Utility.OftenUsedStrings.TEMP;
 import static com.app.simpleweather.Utility.OftenUsedStrings.URL_REQUEST_OPEN_WEATHER_MAP_CURRENT_WEATHER;
@@ -54,7 +53,7 @@ public class WeatherRenewService extends Service {
     private static final CharSequence CHANNEL_NAME = "weather_service";
     private static final String WEATHER_RENEW_CHANNEL_DESCRIPRION = "Weather_channel_notification";
     private static final String ALERT_SIGNALS = "rain|shower rain|light rain|snow|light snow";
-    private static final String CHECK_CONNECTION = "Проверьте подключение к интернету";
+
     private static final String ALERT = "_alert";
 
 
@@ -231,7 +230,7 @@ public class WeatherRenewService extends Service {
     }
 
     private void soWeGotException() {
-        updateNotification(NO_SIGNAL, CHECK_CONNECTION, null);
+        updateNotification(getResources().getString(R.string.NO_SIGNAL), getResources().getString(R.string.check_connection), null);
 
     }
 

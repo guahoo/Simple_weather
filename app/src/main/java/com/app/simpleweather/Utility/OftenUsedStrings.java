@@ -11,8 +11,7 @@ public class OftenUsedStrings {
     public static String FORMATTED="formatted";
     public static String COMPONENTS="components";
     public static String COMMA=",";
-    public static String LOCATION="Ваше местоположение";
-    public static String NO_SIGNAL="Нет сети";
+
     public static String CITY_NAME="city_name";
     public static String COUNTY="county";
     protected static final String STATE = "state";
