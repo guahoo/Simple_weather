@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Simple Weather</string>
-    <string name ="please_wait">等待… </ string>
-    <string name ="connection_error">出问题了，请检查您的互联网连接</ string>
-    <string name ="NO_SIGNAL">没有网络</ string>
-    <string name ="LOCATION">您的位置</ string>
-    <string name ="check_connection">检查您的Internet连接</ string>
-    <string name ="exampleCity"> 的北京 </ string>
+    <string name ="please_wait">等待… </string>
+    <string name ="connection_error">出问题了，请检查您的互联网连接</string>
+    <string name ="NO_SIGNAL">没有网络</string>
+    <string name ="LOCATION">您的位置</string>
+    <string name ="check_connection">检查您的Internet连接</string>
+    <string name ="exampleCity"> 的北京 </string>
 </resources>

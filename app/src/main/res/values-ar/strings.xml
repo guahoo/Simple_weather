@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Simple Weather</string>
-    <string name = "please_wait"> انتظر … </ string>
-    <string name = "connection_error"> حدث خطأ ما ، تحقق من اتصالك بالإنترنت </ string>
-    <string name = "NO_SIGNAL"> لا توجد شبكة </ string>
-    <string name = "LOCATION"> موقعك </ string>
-    <string name = "check_connection"> تحقق من اتصالك بالإنترنت </ string>
-    <string name = "exampleCity"> بوبرويسك </ string>
+    <string name = "please_wait"> انتظر … </string>
+    <string name = "connection_error"> حدث خطأ ما ، تحقق من اتصالك بالإنترنت </string>
+    <string name = "NO_SIGNAL"> لا توجد شبكة </string>
+    <string name = "LOCATION"> موقعك </string>
+    <string name = "check_connection"> تحقق من اتصالك بالإنترنت </string>
+    <string name = "exampleCity"> بوبرويسك </string>
 </resources>

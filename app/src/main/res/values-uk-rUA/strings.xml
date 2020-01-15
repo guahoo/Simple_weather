@@ -3,7 +3,7 @@
     <string name="app_name">Simple Weather</string>
     <string name = "please_wait"> Зачекайте … </string>
     <string name = "connection_error"> Щось пішло не так, перевірте підключення до інтернету </string>
-    <string name = "NO_SIGNAL"> Ні мережі </ string>
+    <string name = "NO_SIGNAL"> Ні мережі </string>
     <string name = "LOCATION"> Ваше місце розташування </string>
     <string name = "check_connection"> Перевірте підключення до інтернету </string>
     <string name = "exampleCity"> Київ </string>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Simple Weather</string>
-    <string name = "please_wait"> המתן … </ string>
-    <string name = "connection_error"> משהו השתבש, בדוק את חיבור האינטרנט שלך </ string>
-    <string name = "NO_SIGNAL"> אין רשת </ string>
-    <string name = "LOCATION"> המיקום שלך </ string>
-    <string name = "check_connection"> בדוק את חיבור האינטרנט שלך </ string>
+    <string name = "please_wait"> המתן … </string>
+    <string name = "connection_error"> משהו השתבש, בדוק את חיבור האינטרנט שלך </string>
+    <string name = "NO_SIGNAL"> אין רשת </string>
+    <string name = "LOCATION"> המיקום שלך </string>
+    <string name = "check_connection"> בדוק את חיבור האינטרנט שלך </string>
     <string name = "exampleCity"> Bobruisk </string>
 </resources>
