@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Simple Weather</string>
+    <string name="please_wait">प्रतीक्षा करें …</string>
+    <string name="connection_error">कुछ गलत हो गया है, अपने इंटरनेट कनेक्शन की जाँच करें</string>
+    <string name="NO_SIGNAL">कोई नेटवर्क नहीं</string>
+    <string name="LOCATION">आपका स्थान</string>
+    <string name="check_connection">अपना इंटरनेट कनेक्शन जांचें</string>
+    <string name="exampleCity">मुंबई</string>
+</resources>

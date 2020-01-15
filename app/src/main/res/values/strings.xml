@@ -2,7 +2,7 @@
     <string name="app_name">Simple Weather</string>
     <string name="alertWeatherType" translatable="false">rain_alert|shower rain_alert|light rain_alert|snow_alert</string>
     <string name="your_city" translatable="false">YOUR CITY</string>
-    <string name="please_wait">Please wait...</string>
+    <string name="please_wait">Please wait…</string>
     <string name="connection_error">Something went wrong, check your internet connection</string>
     <string name="check_connection">Check your internet connection</string>
     <string name="NO_SIGNAL">No signal</string>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Simple Weather</string>
+    <string name = "please_wait"> დაველოდოთ … </string>
+    <string name = "connection_error"> მოხდა არასწორი ინფორმაცია, შეამოწმეთ თქვენი ინტერნეტი </string>
+    <string name = "NO_SIGNAL"> ქსელი არ არის </ string>
+    <string name = "LOCATION"> თქვენი ადგილმდებარეობა </string>
+    <string name = "check_connection"> შეამოწმეთ თქვენი ინტერნეტი </string>
+    <string name = "exampleCity"> თბილისი </string>
+</resources>

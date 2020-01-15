@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Simple Weather</string>
+    <string name = "please_wait"> Odota … </string>
+    <string name = "connection_error"> Jokin meni pieleen, tarkista Internet-yhteytesi </string>
+    <string name = "NO_SIGNAL"> Ei verkkoa </string>
+    <string name = "LOCATION"> sijaintisi </string>
+    <string name = "check_connection"> Tarkista Internet-yhteytesi </string>
+    <string name = "exampleCity"> Tukholma </string>
+
+</resources>

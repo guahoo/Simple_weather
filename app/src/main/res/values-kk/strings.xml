@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Simple Weather</string>
+    <string name="please_wait">Күте тұрыңыз …</string>
+    <string name="connection_error">Бірдеңе дұрыс болмады, интернет қосылымын тексеріңіз</string>
+    <string name="NO_SIGNAL">Желі жоқ</string>
+    <string name="LOCATION">Сіздің орналасқан жеріңіз</string>
+    <string name="check_connection">Интернет байланысын тексеріңіз</string>
+    <string name="exampleCity">Астана</string>
+</resources>
